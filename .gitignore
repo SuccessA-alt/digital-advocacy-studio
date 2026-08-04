@@ -1,0 +1,21 @@
+# Environment variables
+.env
+
+# React
+frontend/node_modules/
+frontend/dist/
+
+# Spring Boot
+backend/target/
+*.class
+
+# IDE files
+.idea/
+*.iml
+
+# Logs
+*.log
+
+# Operating system files
+.DS_Store
+Thumbs.db
