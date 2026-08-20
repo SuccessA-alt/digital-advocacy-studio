@@ -25,5 +25,41 @@ services:
       retries: 10
       start_period: 30s
 
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+
+    container_name: advocacy-backend
+    restart: unless-stopped
+
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+
+    environment:
+      DB_URL: jdbc:mysql://mysql-db:3306/${MYSQL_DATABASE}?serverTimezone=UTC
+      DB_USERNAME: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-5.6-luna}
+
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+
+    container_name: advocacy-frontend
+    restart: unless-stopped
+
+    depends_on:
+      - backend
+
+    ports:
+      - "5173:80"
+
 volumes:
   mysql_data:
