@@ -14,7 +14,6 @@ public class CampaignService {
     private final CampaignRepository campaignRepository;
     private final SdgRepository sdgRepository;
 
-    // Spring gives the service both repositories
     public CampaignService(
             CampaignRepository campaignRepository,
             SdgRepository sdgRepository) {
@@ -32,11 +31,49 @@ public class CampaignService {
     }
 
     public Campaign createCampaign(CampaignRequest request) {
-
-        // Create a new Campaign entity
         Campaign campaign = new Campaign();
 
-        // Copy the user's answers from the request into the entity
+        copyRequestToCampaign(request, campaign);
+
+        return campaignRepository.save(campaign);
+    }
+
+    public Optional<Campaign> updateCampaign(
+            Long id,
+            CampaignRequest request) {
+
+        Optional<Campaign> existingCampaign =
+                campaignRepository.findById(id);
+
+        if (existingCampaign.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Campaign campaign = existingCampaign.get();
+
+        copyRequestToCampaign(request, campaign);
+
+        Campaign updatedCampaign =
+                campaignRepository.save(campaign);
+
+        return Optional.of(updatedCampaign);
+    }
+
+    public boolean deleteCampaign(Long id) {
+
+        if (!campaignRepository.existsById(id)) {
+            return false;
+        }
+
+        campaignRepository.deleteById(id);
+
+        return true;
+    }
+
+    private void copyRequestToCampaign(
+            CampaignRequest request,
+            Campaign campaign) {
+
         campaign.setTitle(request.getTitle());
         campaign.setProblem(request.getProblem());
         campaign.setDesiredOutcome(request.getDesiredOutcome());
@@ -46,19 +83,15 @@ public class CampaignService {
         campaign.setFirstMoves(request.getFirstMoves());
         campaign.setSuccessMeasures(request.getSuccessMeasures());
 
-        // The SDG is optional
         if (request.getSdgId() != null) {
-
-            // Look for the selected SDG in PostgreSQL
-            Sdg sdg = sdgRepository.findById(request.getSdgId())
+            Sdg sdg = sdgRepository
+                    .findById(request.getSdgId())
                     .orElseThrow(() ->
                             new IllegalArgumentException("SDG not found"));
 
-            // Connect the campaign to that SDG
             campaign.setSdg(sdg);
+        } else {
+            campaign.setSdg(null);
         }
-
-        // Save the completed campaign into PostgreSQL
-        return campaignRepository.save(campaign);
     }
 }
