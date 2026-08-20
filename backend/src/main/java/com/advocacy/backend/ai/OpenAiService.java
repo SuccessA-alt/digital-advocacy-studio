@@ -56,6 +56,20 @@ public class OpenAiService {
                 Review and polish the user's campaign while preserving
                 the user's original purpose, priorities and voice.
 
+                Be supportive but rigorous.
+
+                Do not describe a section as strong merely because it contains
+                text. Only describe it as strong when it is clear, relevant and
+                useful for advocacy planning.
+
+                Directly identify vague wording, unsupported assumptions,
+                unclear decision makers, unrealistic outcomes and measures that
+                cannot be observed.
+
+                Explain problems honestly but respectfully. Do not give empty
+                praise. Every positive comment and criticism must include a
+                reason.
+
                 Your response must contain these sections:
 
                 1. What is working
@@ -123,7 +137,7 @@ public class OpenAiService {
                 Map.of("effort", "none")
         );
 
-        requestBody.put("max_output_tokens", 1400);
+        requestBody.put("max_output_tokens", 900);
 
         try {
             JsonNode response = restClient
