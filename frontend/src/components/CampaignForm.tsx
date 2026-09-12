@@ -35,11 +35,33 @@ const stepNames = [
   'Success',
 ]
 
+const sdgColours: Record<number, string> = {
+  1: '#f8c8d2',
+  2: '#f3dfb2',
+  3: '#c8e2c3',
+  4: '#f0bdc8',
+  5: '#ffc9c3',
+  6: '#bceaf5',
+  7: '#ffedaa',
+  8: '#e8bdce',
+  9: '#ffd0b5',
+  10: '#f5bdd8',
+  11: '#ffdbad',
+  12: '#e5d2ae',
+  13: '#c4dbc9',
+  14: '#bce0f3',
+  15: '#d0e9bb',
+  16: '#bfd5e6',
+  17: '#c9d2e2',
+}
+
 export default function CampaignForm({
   sdgs,
   onCampaignCreated,
 }: CampaignFormProps) {
   const [step, setStep] = useState<number>(1)
+
+  const [showExample, setShowExample] = useState(false)
 
   const [campaign, setCampaign] =
     useState<CampaignPayload>({
@@ -162,13 +184,6 @@ export default function CampaignForm({
 
   return (
     <section className="campaign-builder">
-      <h2>Build your advocacy campaign</h2>
-
-      <p>
-        Work through the four steps. Your campaign
-        will only be saved when you select
-        Create campaign.
-      </p>
 
       <div
         aria-label="Campaign steps"
@@ -197,7 +212,7 @@ export default function CampaignForm({
               }
               type="button"
             >
-              <span>{stepNumber}</span>
+
               {stepName}
             </button>
           )
@@ -211,7 +226,7 @@ export default function CampaignForm({
         {step === 1 && (
           <fieldset>
             <legend>
-              Step 1: Describe your campaign
+              Describe your campaign
             </legend>
 
             <p>
@@ -249,6 +264,23 @@ export default function CampaignForm({
             <label htmlFor="problem">
               Describe the problem
             </label>
+            <button
+              className="example-toggle"
+              type="button"
+              aria-expanded={showExample}
+              aria-controls="problem-example"
+              onClick={() => setShowExample(!showExample)}
+            >
+              {showExample ? 'Hide example' : 'Show me an example'}
+            </button>
+
+            <p id="problem-example" hidden={!showExample}>
+              Families in our neighbourhood are skipping meals because
+              they cannot afford enough food. This affects low-income
+              households, especially families with children. Existing
+              support is difficult to find, leaving people without
+              reliable help.
+            </p>
 
             <textarea
               id="problem"
@@ -270,44 +302,53 @@ export default function CampaignForm({
               </p>
             )}
 
-            <label htmlFor="sdgId">
-              Sustainable Development Goal
-              <span> — optional</span>
-            </label>
-
-            <select
-              id="sdgId"
-              name="sdgId"
-              onChange={(event) => {
-                const selectedValue =
-                  event.target.value
-
-                updateField(
-                  'sdgId',
-                  selectedValue === ''
-                    ? null
-                    : Number(selectedValue),
-                )
-              }}
-              value={campaign.sdgId ?? ''}
+            <div
+              className="sdg-picker"
+              role="group"
+              aria-labelledby="sdg-heading"
+              aria-describedby={
+                fieldErrors.sdgId
+                  ? 'sdg-help sdg-error'
+                  : 'sdg-help'
+              }
             >
-              <option value="">
-                No SDG selected
-              </option>
+              <p id="sdg-heading" className="sdg-picker-heading">
+                Connect to a Sustainable Development Goal (optional)
+              </p>
+              <p id="sdg-help" className="sdg-picker-help">
+                Choose one goal, or continue without one.
+                Select your chosen goal again to clear it.
+              </p>
 
-              {sdgs.map((sdg) => (
-                <option
-                  key={sdg.id}
-                  value={sdg.id}
-                >
-                  Goal {sdg.goalNumber}:{' '}
-                  {sdg.name}
-                </option>
-              ))}
-            </select>
+              <div className="sdg-options">
+                {sdgs.map((sdg) => {
+                  const isSelected = campaign.sdgId === sdg.id
+
+                  return (
+                    <button
+                      key={sdg.id}
+                      type="button"
+                      className="sdg-option"
+                      aria-pressed={isSelected}
+                      disabled={isSaving}
+                      style={{
+                        backgroundColor:
+                          sdgColours[sdg.goalNumber] ?? '#eeeaf8',
+                      }}
+                      onClick={() =>
+                        updateField('sdgId', isSelected ? null : sdg.id)
+                      }
+                    >
+                      {isSelected && <span aria-hidden="true">✓ </span>}
+                      {sdg.goalNumber} · {sdg.name}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
 
             {fieldErrors.sdgId && (
-              <p className="field-error">
+              <p id="sdg-error" className="field-error">
                 {fieldErrors.sdgId}
               </p>
             )}
@@ -317,7 +358,7 @@ export default function CampaignForm({
         {step === 2 && (
           <fieldset>
             <legend>
-              Step 2: Shape your message
+               Shape your message
             </legend>
 
             <label htmlFor="desiredOutcome">
@@ -397,7 +438,7 @@ export default function CampaignForm({
         {step === 3 && (
           <fieldset>
             <legend>
-              Step 3: Plan your first action
+               Plan your first action
             </legend>
 
             <label htmlFor="decisionMaker">
@@ -454,7 +495,7 @@ export default function CampaignForm({
         {step === 4 && (
           <fieldset>
             <legend>
-              Step 4: Define success
+               Define success
             </legend>
 
             <label htmlFor="successMeasures">

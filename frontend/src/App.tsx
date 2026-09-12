@@ -9,22 +9,28 @@ import {
 import CampaignDetails from './components/CampaignDetails'
 import CampaignForm from './components/CampaignForm'
 import CampaignHistory from './components/CampaignHistory'
+import WelcomePage from './components/WelcomePage'
 
 import type {
   Campaign,
   Sdg,
 } from './types'
 
+import ThemeSelect from './components/ThemeSelect'
+import { useTheme } from './hooks/useTheme'
+
 import './App.css'
 
 type AppView =
+  | 'welcome'
   | 'builder'
   | 'history'
   | 'details'
 
 export default function App() {
+  const { theme, setTheme } = useTheme()
   const [view, setView] =
-    useState<AppView>('builder')
+  useState<AppView>('welcome')
 
   const [sdgs, setSdgs] =
     useState<Sdg[]>([])
@@ -89,41 +95,45 @@ export default function App() {
   }
 
   function handleCampaignCreated(
-    campaign: Campaign,
-  ) {
-    setCampaigns((currentCampaigns) => [
-      campaign,
-      ...currentCampaigns,
-    ])
+  campaign: Campaign,
+) {
+  setCampaigns((currentCampaigns) => [
+    campaign,
+    ...currentCampaigns,
+  ])
 
-    setSuccessMessage(
-      `"${campaign.title}" was saved successfully.`,
-    )
-  }
+  setSelectedCampaign(campaign)
+  setView('details')
 
+  setSuccessMessage(
+    `"${campaign.title}" was saved successfully.`,
+  )
+}
   function handleCampaignSelected(
     campaign: Campaign,
   ) {
     setSelectedCampaign(campaign)
     setView('details')
   }
-
+if (view === 'welcome') {
+  return (
+    <WelcomePage
+      theme={theme}
+      onThemeChange={setTheme}
+      onStart={showBuilder}
+      onViewCampaigns={showHistory}
+    />
+  )
+}
   return (
     <div className="app">
       <header className="app-header">
         <div className="header-content">
-          <p className="eyebrow">
-            Digital advocacy toolkit
-          </p>
 
           <h1>
             Digital Advocacy Campaign Studio
           </h1>
-
-          <p className="intro">
-            Turn an issue you care about into a
-            structured advocacy campaign.
-          </p>
+          <ThemeSelect theme={theme} onThemeChange={setTheme} />
         </div>
 
         <nav
