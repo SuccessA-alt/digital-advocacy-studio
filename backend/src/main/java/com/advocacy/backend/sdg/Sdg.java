@@ -13,7 +13,7 @@ public class Sdg {
 
     @Id // Primary key
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    // PostgreSQL will generate the id automatically
+    // MySQL will generate the id automatically
     private Long id;
 
     @Column(name = "goal_number", nullable = false, unique = true)
