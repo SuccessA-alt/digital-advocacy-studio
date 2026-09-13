@@ -46,7 +46,7 @@ public class Campaign {
     private String decisionMaker;
 
     @Column(name = "first_moves", nullable = false, columnDefinition = "TEXT")
-    private String firstMoves;
+    private String advocacyPlan;
 
     @Column(name = "success_measures", nullable = false, columnDefinition = "TEXT")
     private String successMeasures;
@@ -120,12 +120,12 @@ public class Campaign {
         this.decisionMaker = decisionMaker;
     }
 
-    public String getFirstMoves() {
-        return firstMoves;
+    public String getAdvocacyPlan() {
+        return advocacyPlan;
     }
 
-    public void setFirstMoves(String firstMoves) {
-        this.firstMoves = firstMoves;
+    public void setAdvocacyPlan(String advocacyPlan) {
+        this.advocacyPlan = advocacyPlan;
     }
 
     public String getSuccessMeasures() {

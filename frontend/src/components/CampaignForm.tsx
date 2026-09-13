@@ -3,6 +3,8 @@ import { useState, type SyntheticEvent } from 'react'
 import {
   ApiError,
   createCampaign,
+  generateCampaignDraft,
+  updateCampaign,
 } from '../api'
 
 import type {
@@ -12,8 +14,11 @@ import type {
 } from '../types'
 
 interface CampaignFormProps {
+  isActive?: boolean
   sdgs: Sdg[]
-  onCampaignCreated: (campaign: Campaign) => void
+  initialCampaign?: Campaign
+  onBackToWelcome: () => void
+  onCampaignSaved: (campaign: Campaign) => void
 }
 
 const emptyCampaign: CampaignPayload = {
@@ -24,7 +29,7 @@ const emptyCampaign: CampaignPayload = {
   coreMessage: '',
   sharingMethod: '',
   decisionMaker: '',
-  firstMoves: '',
+  advocacyPlan: '',
   successMeasures: '',
 }
 
@@ -35,16 +40,74 @@ const stepNames = [
   'Success',
 ]
 
+const sdgColours: Record<number, string> = {
+  1: '#f8c8d2',
+  2: '#f3dfb2',
+  3: '#c8e2c3',
+  4: '#f0bdc8',
+  5: '#ffc9c3',
+  6: '#bceaf5',
+  7: '#ffedaa',
+  8: '#e8bdce',
+  9: '#ffd0b5',
+  10: '#f5bdd8',
+  11: '#ffdbad',
+  12: '#e5d2ae',
+  13: '#c4dbc9',
+  14: '#bce0f3',
+  15: '#d0e9bb',
+  16: '#bfd5e6',
+  17: '#c9d2e2',
+}
+
+
+const draftFields = [
+  { name: 'title', label: 'Campaign title', step: 2, maxLength: 120, rows: 1 },
+  { name: 'desiredOutcome', label: 'What do you want to achieve?', step: 2, maxLength: 5000, rows: 5 },
+  { name: 'coreMessage', label: 'What is your core message?', step: 2, maxLength: 5000, rows: 5 },
+  { name: 'decisionMaker', label: 'Who can make this change?', step: 3, maxLength: 255, rows: 4 },
+{
+  name: 'advocacyPlan',
+  label: 'Your advocacy plan',
+  step: 3,
+  maxLength: 10000,
+  rows: 12,
+},
+  { name: 'successMeasures', label: 'How will you measure success?', step: 4, maxLength: 5000, rows: 7 },
+] as const
+
+const stageTitles = ['Describe your campaign', 'Your message', 'Your plan', 'Your success measures']
+
 export default function CampaignForm({
   sdgs,
-  onCampaignCreated,
+  initialCampaign,
+  isActive = true,
+  onBackToWelcome,
+  onCampaignSaved,
 }: CampaignFormProps) {
   const [step, setStep] = useState<number>(1)
 
-  const [campaign, setCampaign] =
-    useState<CampaignPayload>({
-      ...emptyCampaign,
-    })
+  const [isGenerating, setIsGenerating] = useState(false)
+  
+  const [hasDraft, setHasDraft] = useState(Boolean(initialCampaign))
+
+  const [showExample, setShowExample] = useState(false)
+
+  const [campaign, setCampaign] = useState<CampaignPayload>(() =>
+  initialCampaign
+    ? {
+        title: initialCampaign.title,
+        problem: initialCampaign.problem,
+        sdgId: initialCampaign.sdg?.id ?? null,
+        desiredOutcome: initialCampaign.desiredOutcome,
+        coreMessage: initialCampaign.coreMessage,
+        sharingMethod: initialCampaign.sharingMethod ?? '',
+        decisionMaker: initialCampaign.decisionMaker,
+        advocacyPlan: initialCampaign.advocacyPlan,
+        successMeasures: initialCampaign.successMeasures,
+      }
+    : { ...emptyCampaign },
+)
 
   const [fieldErrors, setFieldErrors] =
     useState<Record<string, string>>({})
@@ -70,78 +133,121 @@ export default function CampaignForm({
     }))
   }
 
-  function goToNextStep() {
+  async function goToNextStep() {
+    if (isGenerating || isSaving) return
+
     setGeneralError('')
 
-    setStep((currentStep) =>
-      Math.min(currentStep + 1, 4),
-    )
+    if (step === 1) {
+      if (!campaign.problem.trim()) {
+        setFieldErrors((currentErrors) => ({
+          ...currentErrors,
+          problem: 'Please describe the problem',
+        }))
+        return
+      }
+
+      if (campaign.problem.length > 5000) {
+        setFieldErrors((currentErrors) => ({
+          ...currentErrors,
+          problem: 'Problem description must not exceed 5000 characters',
+        }))
+        return
+      }
+
+      if (!hasDraft) {
+        setIsGenerating(true)
+        setFieldErrors({})
+
+        try {
+          const draft = await generateCampaignDraft({
+            problem: campaign.problem.trim(),
+            sdgId: campaign.sdgId,
+          })
+
+          setCampaign((currentCampaign) => ({
+            ...currentCampaign,
+            ...draft,
+          }))
+
+          setHasDraft(true)
+          setStep(2)
+        } catch (error: unknown) {
+          if (error instanceof ApiError) {
+            setGeneralError(error.message)
+            setFieldErrors(error.fieldErrors)
+          } else {
+            setGeneralError(
+              'The AI draft could not be generated. Please try again.',
+            )
+          }
+        } finally {
+          setIsGenerating(false)
+        }
+
+        return
+      }
+    }
+
+    setStep((currentStep) => Math.min(currentStep + 1, 4))
   }
+
 
   function goToPreviousStep() {
+    if (isSaving || isGenerating) return
     setGeneralError('')
-
-    setStep((currentStep) =>
-      Math.max(currentStep - 1, 1),
-    )
+    if (step === 1) onBackToWelcome()
+    else setStep(step - 1)
   }
 
-  function moveToStepContainingError(
-    errors: Record<string, string>,
-  ) {
-    const errorFields = Object.keys(errors)
-
-    if (
-      errorFields.includes('title') ||
-      errorFields.includes('problem') ||
-      errorFields.includes('sdgId')
-    ) {
+  function moveToStepContainingError(errors: Record<string, string>) {
+    if (errors.problem || errors.sdgId) {
       setStep(1)
       return
     }
-
-    if (
-      errorFields.includes('desiredOutcome') ||
-      errorFields.includes('coreMessage') ||
-      errorFields.includes('sharingMethod')
-    ) {
-      setStep(2)
-      return
-    }
-
-    if (
-      errorFields.includes('decisionMaker') ||
-      errorFields.includes('firstMoves')
-    ) {
-      setStep(3)
-      return
-    }
-
-    if (errorFields.includes('successMeasures')) {
-      setStep(4)
-    }
+    const invalidField = draftFields.find((field) => errors[field.name])
+    if (invalidField) setStep(invalidField.step)
   }
 
   async function handleSubmit(
     event: SyntheticEvent<HTMLFormElement>,
   ) {
     event.preventDefault()
+    if (isSaving || isGenerating || step !== 4 || !hasDraft) return
+
+    const errors: Record<string, string> = {}
+    if (!campaign.problem.trim()) errors.problem = 'Please describe the problem'
+    if (campaign.problem.length > 5000) errors.problem = 'Use no more than 5000 characters'
+    for (const field of draftFields) {
+      if (!campaign[field.name].trim()) errors[field.name] = 'Please complete this field'
+      else if (campaign[field.name].length > field.maxLength) {
+        errors[field.name] = `Use no more than ${field.maxLength} characters`
+      }
+    }
+    if (Object.keys(errors).length) {
+      setFieldErrors(errors)
+      setGeneralError('Please complete the highlighted fields before saving.')
+      moveToStepContainingError(errors)
+      return
+    }
 
     setIsSaving(true)
     setGeneralError('')
     setFieldErrors({})
 
     try {
-      const savedCampaign =
-        await createCampaign(campaign)
+     const savedCampaign = initialCampaign
+  ? await updateCampaign(initialCampaign.id, campaign)
+  : await createCampaign(campaign)
 
-      onCampaignCreated(savedCampaign)
+onCampaignSaved(savedCampaign)
 
-      setCampaign({
-        ...emptyCampaign,
-      })
-
-      setStep(1)
+if (!initialCampaign) {
+  setCampaign({ ...emptyCampaign })
+  setHasDraft(false)
+  setShowExample(false)
+  setStep(1)
+}
     } catch (error: unknown) {
       if (error instanceof ApiError) {
         setGeneralError(error.message)
@@ -159,16 +265,10 @@ export default function CampaignForm({
       setIsSaving(false)
     }
   }
+  if (!isActive) return null
 
   return (
     <section className="campaign-builder">
-      <h2>Build your advocacy campaign</h2>
-
-      <p>
-        Work through the four steps. Your campaign
-        will only be saved when you select
-        Create campaign.
-      </p>
 
       <div
         aria-label="Campaign steps"
@@ -191,13 +291,14 @@ export default function CampaignForm({
                   ? 'step-button active'
                   : 'step-button'
               }
+              disabled={isSaving || isGenerating || (!hasDraft && stepNumber > 1)}
               key={stepName}
               onClick={() =>
                 setStep(stepNumber)
               }
               type="button"
             >
-              <span>{stepNumber}</span>
+
               {stepName}
             </button>
           )
@@ -209,9 +310,9 @@ export default function CampaignForm({
         onSubmit={handleSubmit}
       >
         {step === 1 && (
-          <fieldset>
+          <fieldset disabled={isSaving || isGenerating}>
             <legend>
-              Step 1: Describe your campaign
+              Describe your campaign
             </legend>
 
             <p>
@@ -221,37 +322,32 @@ export default function CampaignForm({
               Goal.
             </p>
 
-            <label htmlFor="title">
-              Campaign title
-            </label>
-
-            <input
-              id="title"
-              maxLength={120}
-              name="title"
-              onChange={(event) =>
-                updateField(
-                  'title',
-                  event.target.value,
-                )
-              }
-              placeholder="For example: Cleaner Local Parks"
-              type="text"
-              value={campaign.title}
-            />
-
-            {fieldErrors.title && (
-              <p className="field-error">
-                {fieldErrors.title}
-              </p>
-            )}
-
             <label htmlFor="problem">
               Describe the problem
             </label>
+            <button
+              className="example-toggle"
+              type="button"
+              aria-expanded={showExample}
+              aria-controls="problem-example"
+              onClick={() => setShowExample(!showExample)}
+            >
+              {showExample ? 'Hide example' : 'Show me an example'}
+            </button>
+
+            <p id="problem-example" hidden={!showExample}>
+              Families in our neighbourhood are skipping meals because
+              they cannot afford enough food. This affects low-income
+              households, especially families with children. Existing
+              support is difficult to find, leaving people without
+              reliable help.
+            </p>
 
             <textarea
               id="problem"
+              maxLength={5000}
+              aria-invalid={Boolean(fieldErrors.problem)}
+              aria-describedby={fieldErrors.problem ? 'problem-error' : undefined}
               name="problem"
               onChange={(event) =>
                 updateField(
@@ -265,221 +361,94 @@ export default function CampaignForm({
             />
 
             {fieldErrors.problem && (
-              <p className="field-error">
+              <p id="problem-error" className="field-error">
                 {fieldErrors.problem}
               </p>
             )}
 
-            <label htmlFor="sdgId">
-              Sustainable Development Goal
-              <span> — optional</span>
-            </label>
-
-            <select
-              id="sdgId"
-              name="sdgId"
-              onChange={(event) => {
-                const selectedValue =
-                  event.target.value
-
-                updateField(
-                  'sdgId',
-                  selectedValue === ''
-                    ? null
-                    : Number(selectedValue),
-                )
-              }}
-              value={campaign.sdgId ?? ''}
+            <div
+              className="sdg-picker"
+              role="group"
+              aria-labelledby="sdg-heading"
+              aria-describedby={
+                fieldErrors.sdgId
+                  ? 'sdg-help sdg-error'
+                  : 'sdg-help'
+              }
             >
-              <option value="">
-                No SDG selected
-              </option>
+              <p id="sdg-heading" className="sdg-picker-heading">
+                Connect to a Sustainable Development Goal (optional)
+              </p>
+              <p id="sdg-help" className="sdg-picker-help">
+                Choose one goal, or continue without one.
+                Select your chosen goal again to clear it.
+              </p>
 
-              {sdgs.map((sdg) => (
-                <option
-                  key={sdg.id}
-                  value={sdg.id}
-                >
-                  Goal {sdg.goalNumber}:{' '}
-                  {sdg.name}
-                </option>
-              ))}
-            </select>
+              <div className="sdg-options">
+                {sdgs.map((sdg) => {
+                  const isSelected = campaign.sdgId === sdg.id
+
+                  return (
+                    <button
+                      key={sdg.id}
+                      type="button"
+                      className="sdg-option"
+                      aria-pressed={isSelected}
+                      style={{
+                        backgroundColor:
+                          sdgColours[sdg.goalNumber] ?? '#eeeaf8',
+                      }}
+                      onClick={() =>
+                        updateField('sdgId', isSelected ? null : sdg.id)
+                      }
+                    >
+                      {isSelected && <span aria-hidden="true">✓ </span>}
+                      {sdg.goalNumber} · {sdg.name}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
 
             {fieldErrors.sdgId && (
-              <p className="field-error">
+              <p id="sdg-error" className="field-error">
                 {fieldErrors.sdgId}
               </p>
             )}
           </fieldset>
         )}
 
-        {step === 2 && (
-          <fieldset>
-            <legend>
-              Step 2: Shape your message
-            </legend>
-
-            <label htmlFor="desiredOutcome">
-              What do you want to achieve?
-            </label>
-
-            <textarea
-              id="desiredOutcome"
-              name="desiredOutcome"
-              onChange={(event) =>
-                updateField(
-                  'desiredOutcome',
-                  event.target.value,
-                )
+        {step > 1 && (
+          <fieldset disabled={isSaving || isGenerating}>
+            <legend>{stageTitles[step - 1]}</legend>
+            <p>These suggestions are a starting point. Type directly in any box to make them yours.</p>
+            {draftFields.filter((field) => field.step === step).map((field) => {
+              const error = fieldErrors[field.name]
+              const inputProps = {
+                id: field.name,
+                name: field.name,
+                value: campaign[field.name],
+                maxLength: field.maxLength,
+                'aria-invalid': Boolean(error),
+                'aria-describedby': `${field.name}-hint${error ? ` ${field.name}-error` : ''}`,
               }
-              placeholder="Describe the change you want to see."
-              rows={5}
-              value={campaign.desiredOutcome}
-            />
-
-            {fieldErrors.desiredOutcome && (
-              <p className="field-error">
-                {fieldErrors.desiredOutcome}
-              </p>
-            )}
-
-            <label htmlFor="coreMessage">
-              What is your core message?
-            </label>
-
-            <textarea
-              id="coreMessage"
-              name="coreMessage"
-              onChange={(event) =>
-                updateField(
-                  'coreMessage',
-                  event.target.value,
-                )
-              }
-              placeholder="Write the main message people should remember."
-              rows={5}
-              value={campaign.coreMessage}
-            />
-
-            {fieldErrors.coreMessage && (
-              <p className="field-error">
-                {fieldErrors.coreMessage}
-              </p>
-            )}
-
-            <label htmlFor="sharingMethod">
-              How will you share it?
-            </label>
-
-            <textarea
-              id="sharingMethod"
-              name="sharingMethod"
-              onChange={(event) =>
-                updateField(
-                  'sharingMethod',
-                  event.target.value,
-                )
-              }
-              placeholder="For example: social media, meetings or community events."
-              rows={4}
-              value={campaign.sharingMethod}
-            />
-
-            {fieldErrors.sharingMethod && (
-              <p className="field-error">
-                {fieldErrors.sharingMethod}
-              </p>
-            )}
-          </fieldset>
-        )}
-
-        {step === 3 && (
-          <fieldset>
-            <legend>
-              Step 3: Plan your first action
-            </legend>
-
-            <label htmlFor="decisionMaker">
-              Who can make this change?
-            </label>
-
-            <input
-              id="decisionMaker"
-              maxLength={255}
-              name="decisionMaker"
-              onChange={(event) =>
-                updateField(
-                  'decisionMaker',
-                  event.target.value,
-                )
-              }
-              placeholder="For example: the local council"
-              type="text"
-              value={campaign.decisionMaker}
-            />
-
-            {fieldErrors.decisionMaker && (
-              <p className="field-error">
-                {fieldErrors.decisionMaker}
-              </p>
-            )}
-
-            <label htmlFor="firstMoves">
-              What is your first move?
-            </label>
-
-            <textarea
-              id="firstMoves"
-              name="firstMoves"
-              onChange={(event) =>
-                updateField(
-                  'firstMoves',
-                  event.target.value,
-                )
-              }
-              placeholder="Describe the first practical action you will take."
-              rows={6}
-              value={campaign.firstMoves}
-            />
-
-            {fieldErrors.firstMoves && (
-              <p className="field-error">
-                {fieldErrors.firstMoves}
-              </p>
-            )}
-          </fieldset>
-        )}
-
-        {step === 4 && (
-          <fieldset>
-            <legend>
-              Step 4: Define success
-            </legend>
-
-            <label htmlFor="successMeasures">
-              How will you measure success?
-            </label>
-
-            <textarea
-              id="successMeasures"
-              name="successMeasures"
-              onChange={(event) =>
-                updateField(
-                  'successMeasures',
-                  event.target.value,
-                )
-              }
-              placeholder="What visible or measurable change will show that the campaign is working?"
-              rows={7}
-              value={campaign.successMeasures}
-            />
-
-            {fieldErrors.successMeasures && (
-              <p className="field-error">
-                {fieldErrors.successMeasures}
-              </p>
-            )}
+              return (
+                <div className="draft-card" key={field.name}>
+                  <div className="draft-card-heading">
+                    <label htmlFor={field.name}>{field.label}</label>
+                    <span className="draft-badge" id={`${field.name}-hint`}>AI draft, yours to edit</span>
+                  </div>
+                  {field.name === 'title' ? (
+                    <input {...inputProps} type="text"
+                      onChange={(event) => updateField(field.name, event.target.value)} />
+                  ) : (
+                    <textarea {...inputProps} rows={field.rows}
+                      onChange={(event) => updateField(field.name, event.target.value)} />
+                  )}
+                  {error && <p className="field-error" id={`${field.name}-error`}>{error}</p>}
+                </div>
+              )
+            })}
           </fieldset>
         )}
 
@@ -492,36 +461,46 @@ export default function CampaignForm({
           </div>
         )}
 
+        {step === 1 && hasDraft && (
+          <p className="draft-note">Your draft is already created. Continuing keeps your current suggestions and edits.</p>
+        )}
         <div className="form-actions">
-          {step > 1 && (
-            <button
-              disabled={isSaving}
-              onClick={goToPreviousStep}
-              type="button"
-            >
-              Previous
-            </button>
-          )}
+  <button
+    disabled={isSaving || isGenerating}
+    onClick={goToPreviousStep}
+    type="button"
+  >
+    ← Back
+  </button>
 
-          {step < 4 ? (
-            <button
-              disabled={isSaving}
-              onClick={goToNextStep}
-              type="button"
-            >
-              Continue
-            </button>
-          ) : (
-            <button
-              disabled={isSaving}
-              type="submit"
-            >
-              {isSaving
-                ? 'Saving campaign...'
-                : 'Create campaign'}
-            </button>
-          )}
-        </div>
+  {step < 4 ? (
+    <button
+      key="continue-step"
+      disabled={isSaving || isGenerating}
+      onClick={(event) => {
+        event.preventDefault()
+        void goToNextStep()
+      }}
+      type="button"
+    >
+      {isGenerating
+        ? 'Building your campaign draft…'
+        : 'Continue →'}
+    </button>
+  ) : (
+    <button
+      key="save-campaign"
+      disabled={isSaving || isGenerating || !hasDraft}
+      type="submit"
+    >
+{isSaving
+  ? 'Saving…'
+  : initialCampaign
+    ? 'Save changes'
+    : 'Create campaign plan →'}    </button>
+  )}
+</div>
+        {isGenerating && <p role="status" className="draft-note">Building your campaign draft...</p>}
       </form>
     </section>
   )

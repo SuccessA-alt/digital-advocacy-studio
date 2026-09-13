@@ -1,0 +1,134 @@
+.studio-welcome {
+  min-height: 100vh;
+  color: var(--text);
+  background: var(--page);
+}
+
+.welcome-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.welcome-header-inner {
+  flex-wrap: wrap;
+  padding-block: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  width: min(calc(100% - 32px), 920px);
+  min-height: 76px;
+  margin: 0 auto;
+}
+
+.welcome-brand {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 750;
+}
+
+.welcome-brand span {
+  color: var(--accent);
+}
+
+.welcome-menu {
+  position: relative;
+}
+
+.welcome-menu summary {
+  padding: 10px;
+  list-style: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.welcome-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.welcome-menu nav {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 10;
+  width: 210px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: 0 12px 30px var(--shadow);
+}
+
+.welcome-menu button {
+  width: 100%;
+  padding: 12px;
+  border: 0;
+  border-radius: 8px;
+  color: var(--text);
+  background: transparent;
+  text-align: left;
+}
+
+.welcome-menu button:hover {
+  background: var(--surface-soft);
+}
+
+.welcome-main {
+  width: min(calc(100% - 40px), 720px);
+  margin: 0 auto;
+  padding: clamp(56px, 9vw, 100px) 0;
+  text-align: center;
+}
+
+.welcome-eyebrow {
+  margin: 0 0 20px;
+  color: var(--accent);
+  font-size: 0.875rem;
+  font-weight: 650;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.welcome-main h1 {
+  max-width: 620px;
+  margin: 0 auto;
+  color: var(--text);
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+}
+
+.welcome-description {
+  max-width: 600px;
+  margin: 24px auto 32px;
+  color: var(--muted);
+  font-size: 1.125rem;
+  line-height: 1.7;
+}
+
+.welcome-start {
+  min-height: 48px;
+  padding: 14px 28px;
+  border: 0;
+  border-radius: 10px;
+  color: var(--on-accent);
+  background: var(--accent-fill);
+  font-weight: 700;
+}
+
+.welcome-start:hover {
+  background: var(--accent-hover);
+}
+
+.welcome-start:focus-visible,
+.welcome-menu summary:focus-visible,
+.welcome-menu button:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+}
+.welcome-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}

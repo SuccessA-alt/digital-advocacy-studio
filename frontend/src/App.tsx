@@ -6,25 +6,32 @@ import {
   getSdgs,
 } from './api'
 
-import CampaignDetails from './components/CampaignDetails'
+import CampaignWorkspace from './components/CampaignWorkspace'
 import CampaignForm from './components/CampaignForm'
 import CampaignHistory from './components/CampaignHistory'
+import WelcomePage from './components/WelcomePage'
 
 import type {
   Campaign,
   Sdg,
 } from './types'
 
+import ThemeSelect from './components/ThemeSelect'
+import { useTheme } from './hooks/useTheme'
+
 import './App.css'
 
 type AppView =
+  | 'welcome'
   | 'builder'
   | 'history'
   | 'details'
+  | 'edit'
 
 export default function App() {
+  const { theme, setTheme } = useTheme()
   const [view, setView] =
-    useState<AppView>('builder')
+  useState<AppView>('welcome')
 
   const [sdgs, setSdgs] =
     useState<Sdg[]>([])
@@ -89,41 +96,52 @@ export default function App() {
   }
 
   function handleCampaignCreated(
-    campaign: Campaign,
-  ) {
-    setCampaigns((currentCampaigns) => [
-      campaign,
-      ...currentCampaigns,
-    ])
+  campaign: Campaign,
+) {
+  setCampaigns((currentCampaigns) => [
+    campaign,
+    ...currentCampaigns,
+  ])
 
-    setSuccessMessage(
-      `"${campaign.title}" was saved successfully.`,
-    )
-  }
+  setSelectedCampaign(campaign)
+  setView('details')
 
-  function handleCampaignSelected(
-    campaign: Campaign,
-  ) {
-    setSelectedCampaign(campaign)
-    setView('details')
-  }
+  setSuccessMessage(
+    `"${campaign.title}" was saved successfully.`,
+  )
+}
 
+function handleCampaignUpdated(campaign: Campaign) {
+  setCampaigns((currentCampaigns) =>
+    currentCampaigns.map((saved) =>
+      saved.id === campaign.id ? campaign : saved,
+    ),
+  )
+
+  setSelectedCampaign(campaign)
+  setView('details')
+  setSuccessMessage('Your changes were saved as a new version.')
+}
+
+  function handleCampaignSelected(campaign: Campaign) {
+  setSelectedCampaign(campaign)
+  setSuccessMessage('')
+  setView('details')
+}
   return (
-    <div className="app">
+    <>
+      {view === 'welcome' && (
+        <WelcomePage theme={theme} onThemeChange={setTheme}
+          onStart={showBuilder} onViewCampaigns={showHistory} />
+      )}
+      <div className="app" hidden={view === 'welcome'}>
       <header className="app-header">
         <div className="header-content">
-          <p className="eyebrow">
-            Digital advocacy toolkit
-          </p>
 
           <h1>
             Digital Advocacy Campaign Studio
           </h1>
-
-          <p className="intro">
-            Turn an issue you care about into a
-            structured advocacy campaign.
-          </p>
+          <ThemeSelect theme={theme} onThemeChange={setTheme} />
         </div>
 
         <nav
@@ -182,22 +200,21 @@ export default function App() {
             <p>{loadingError}</p>
 
             <p>
-              Make sure MySQL and Spring Boot are
-              running, then refresh the page.
+              Please try refreshing the page. Your campaign studio is temporarily unavailable.
             </p>
           </div>
         )}
 
-        {!isLoading &&
-          !loadingError &&
-          view === 'builder' && (
-            <CampaignForm
-              onCampaignCreated={
-                handleCampaignCreated
-              }
-              sdgs={sdgs}
-            />
-          )}
+        {!isLoading && !loadingError && (
+          <div className="builder-view" hidden={view !== 'builder'}>
+           <CampaignForm
+            isActive={view === 'builder'}
+  sdgs={sdgs}
+  onCampaignSaved={handleCampaignCreated}
+  onBackToWelcome={() => setView('welcome')}
+/>
+          </div>
+        )}
 
         {!isLoading &&
           !loadingError &&
@@ -214,12 +231,16 @@ export default function App() {
           !loadingError &&
           view === 'details' &&
           selectedCampaign && (
-            <CampaignDetails
-              campaign={selectedCampaign}
-              onBack={showHistory}
-            />
+            <CampaignWorkspace
+         key={selectedCampaign.id}
+         campaign={selectedCampaign}
+         sdgs={sdgs}
+         onCampaignSaved={handleCampaignUpdated}
+         onBack={showHistory}
+              />
           )}
       </main>
-    </div>
+      </div>
+    </>
   )
 }

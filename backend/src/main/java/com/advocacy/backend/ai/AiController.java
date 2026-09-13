@@ -23,6 +23,13 @@ public class AiController {
         this.openAiService = openAiService;
     }
 
+    @PostMapping("/draft")
+public CampaignDraftResponse draftCampaign(
+        @Valid @RequestBody CampaignDraftRequest request) {
+
+    return openAiService.draftCampaign(request);
+}
+
     @PostMapping("/review")
     public Map<String, String> reviewCampaign(
             @Valid @RequestBody
