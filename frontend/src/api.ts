@@ -4,6 +4,7 @@ import type {
   CampaignDraftRequest,
   CampaignDraftResponse,
   CampaignPayload,
+  CampaignVersion,
   Sdg,
   ValidationErrorResponse,
 } from './types'
@@ -159,4 +160,56 @@ export function generateCampaignDraft(
     },
     body: JSON.stringify(draftRequest),
   })
+}
+
+export function getCampaignVersions(
+  campaignId: number,
+): Promise<CampaignVersion[]> {
+  return request<CampaignVersion[]>(
+    `/campaigns/${campaignId}/versions`,
+  )
+}
+
+export function getCampaignVersion(
+  campaignId: number,
+  versionId: number,
+): Promise<CampaignVersion> {
+  return request<CampaignVersion>(
+    `/campaigns/${campaignId}/versions/${versionId}`,
+  )
+}
+
+export async function downloadCampaignVersionPdf(
+  version: CampaignVersion,
+): Promise<void> {
+  const response = await fetch(
+    `${API_BASE}/campaigns/${version.campaignId}/versions/${version.id}/pdf`,
+  )
+
+  if (!response.ok) {
+    throw new ApiError(
+      'Could not download this campaign version as a PDF.',
+      response.status,
+    )
+  }
+
+  const pdfBlob = await response.blob()
+  const downloadUrl = URL.createObjectURL(pdfBlob)
+  const link = document.createElement('a')
+
+  link.href = downloadUrl
+  link.download =
+    `campaign-${version.campaignId}-version-${version.versionNumber}.pdf`
+
+  try {
+    document.body.appendChild(link)
+    link.click()
+  } finally {
+    link.remove()
+
+    // Allow the browser time to begin the download before cleanup.
+    window.setTimeout(() => {
+      URL.revokeObjectURL(downloadUrl)
+    }, 60_000)
+  }
 }

@@ -44,25 +44,24 @@ export default function WelcomePage({
       </header>
 
       <main className="welcome-main">
-        <p className="welcome-eyebrow">
-          Digital Advocacy Campaign Studio
-        </p>
+  <p className="welcome-eyebrow">
+    DIGITAL ADVOCACY STUDIO
+  </p>
 
-        <h1>Turn concern into action in minutes.</h1>
+  <h1>Turn concern into action in minutes.</h1>
 
-        <p className="welcome-description">
-          Turn an issue you care about into a
-          structured advocacy campaign.
-        </p>
+  <p className="welcome-description">
+    Turn an issue you care about into a structured, actionable advocacy campaign.
+  </p>
 
-        <button
-          className="welcome-start"
-          type="button"
-          onClick={onStart}
-        >
-          Start here
-        </button>
-      </main>
+  <button
+    className="welcome-start"
+    type="button"
+    onClick={onStart}
+  >
+    Start here
+  </button>
+</main>
     </div>
   )
 }

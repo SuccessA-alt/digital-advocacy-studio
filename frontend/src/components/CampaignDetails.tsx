@@ -1,90 +1,48 @@
 import { useState } from 'react'
-import Markdown from 'react-markdown'
 
 import {
   ApiError,
   downloadCampaignPdf,
-  reviewCampaign,
+  downloadCampaignVersionPdf,
 } from '../api'
 
 import type {
   Campaign,
-  CampaignPayload,
+  CampaignVersion,
 } from '../types'
 
 interface CampaignDetailsProps {
   campaign: Campaign
+  version?: CampaignVersion | null
   onBack: () => void
 }
 
 export default function CampaignDetails({
   campaign,
+  version = null,
   onBack,
 }: CampaignDetailsProps) {
-  const [aiReview, setAiReview] =
-    useState<string>('')
-
-  const [aiError, setAiError] =
-    useState<string>('')
-
-  const [isReviewing, setIsReviewing] =
-    useState<boolean>(false)
-
-  const [isDownloading, setIsDownloading] =
-    useState<boolean>(false)
-
-  function createReviewPayload(): CampaignPayload {
-    return {
-      title: campaign.title,
-      problem: campaign.problem,
-      sdgId: campaign.sdg?.id ?? null,
-      desiredOutcome: campaign.desiredOutcome,
-      coreMessage: campaign.coreMessage,
-      sharingMethod: campaign.sharingMethod,
-      decisionMaker: campaign.decisionMaker,
-      advocacyPlan: campaign.advocacyPlan,
-      successMeasures: campaign.successMeasures,
-    }
-  }
-
-  async function handleAiReview() {
-  setIsReviewing(true)
-  setAiError('')
-  setAiReview('')
-
-  try {
-    const response = await reviewCampaign(
-      createReviewPayload(),
-    )
-
-    setAiReview(response.review)
-  } catch (error: unknown) {
-    if (error instanceof ApiError) {
-      setAiError(error.message)
-    } else {
-      setAiError(
-        'The AI review could not be completed.',
-      )
-    }
-  } finally {
-    setIsReviewing(false)
-  }
-}
+  const [pdfError, setPdfError] = useState('')
+  const [isDownloading, setIsDownloading] = useState(false)
 
   async function handlePdfDownload() {
+    if (isDownloading) return
+
     setIsDownloading(true)
-    setAiError('')
+    setPdfError('')
 
     try {
-      await downloadCampaignPdf(campaign.id)
-    } catch (error: unknown) {
-      if (error instanceof ApiError) {
-        setAiError(error.message)
+      if (version) {
+        await downloadCampaignVersionPdf(version)
       } else {
-        setAiError(
-          'The PDF could not be downloaded.',
-        )
+        await downloadCampaignPdf(campaign.id)
       }
+    } catch (error: unknown) {
+      setPdfError(
+        error instanceof ApiError
+          ? error.message
+          : 'The PDF could not be downloaded.',
+      )
     } finally {
       setIsDownloading(false)
     }
@@ -101,11 +59,17 @@ export default function CampaignDetails({
       </button>
 
       <div className="campaign-details-header">
-        <p className="eyebrow">
-          Advocacy campaign
-        </p>
+        <p className="eyebrow">Advocacy campaign</p>
 
         <h2>{campaign.title}</h2>
+
+        {version && (
+          <p className="draft-note">
+            Version {version.versionNumber}
+            {' — '}
+            {new Date(version.savedAt).toLocaleString()}
+          </p>
+        )}
 
         {campaign.sdg && (
           <p className="sdg-label">
@@ -131,7 +95,6 @@ export default function CampaignDetails({
           <p>{campaign.coreMessage}</p>
         </article>
 
-
         <article>
           <h3>Who can make the change</h3>
           <p>{campaign.decisionMaker}</p>
@@ -148,42 +111,15 @@ export default function CampaignDetails({
         </article>
       </div>
 
-      {aiError && (
-        <div
-          className="error-summary"
-          role="alert"
-        >
-          {aiError}
+      {pdfError && (
+        <div className="error-summary" role="alert">
+          {pdfError}
         </div>
-      )}
-
-      {aiReview && (
-        <section
-          aria-live="polite"
-          className="ai-review"
-        >
-          <p className="eyebrow">
-            AI campaign coach
-          </p>
-
-          <h3>Your campaign review</h3>
-
-          <div className="ai-review-content">
-  <Markdown>{aiReview}</Markdown>
-</div>
-
-          <p className="ai-review-note">
-            This review is guidance. Your original
-            saved campaign has not been changed.
-          </p>
-        </section>
       )}
 
       <div className="campaign-details-actions">
         <button
-          disabled={
-            isDownloading || isReviewing
-          }
+          disabled={isDownloading}
           onClick={() => {
             void handlePdfDownload()
           }}
@@ -192,20 +128,6 @@ export default function CampaignDetails({
           {isDownloading
             ? 'Preparing PDF...'
             : 'Download PDF'}
-        </button>
-
-        <button
-          disabled={
-            isReviewing || isDownloading
-          }
-          onClick={() => {
-            void handleAiReview()
-          }}
-          type="button"
-        >
-          {isReviewing
-            ? 'Reviewing campaign...'
-            : 'Review with AI'}
         </button>
       </div>
     </section>

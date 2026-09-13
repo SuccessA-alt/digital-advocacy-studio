@@ -6,7 +6,7 @@ import {
   getSdgs,
 } from './api'
 
-import CampaignDetails from './components/CampaignDetails'
+import CampaignWorkspace from './components/CampaignWorkspace'
 import CampaignForm from './components/CampaignForm'
 import CampaignHistory from './components/CampaignHistory'
 import WelcomePage from './components/WelcomePage'
@@ -110,12 +110,24 @@ export default function App() {
     `"${campaign.title}" was saved successfully.`,
   )
 }
-  function handleCampaignSelected(
-    campaign: Campaign,
-  ) {
-    setSelectedCampaign(campaign)
-    setView('details')
-  }
+
+function handleCampaignUpdated(campaign: Campaign) {
+  setCampaigns((currentCampaigns) =>
+    currentCampaigns.map((saved) =>
+      saved.id === campaign.id ? campaign : saved,
+    ),
+  )
+
+  setSelectedCampaign(campaign)
+  setView('details')
+  setSuccessMessage('Your changes were saved as a new version.')
+}
+
+  function handleCampaignSelected(campaign: Campaign) {
+  setSelectedCampaign(campaign)
+  setSuccessMessage('')
+  setView('details')
+}
   return (
     <>
       {view === 'welcome' && (
@@ -196,6 +208,7 @@ export default function App() {
         {!isLoading && !loadingError && (
           <div className="builder-view" hidden={view !== 'builder'}>
            <CampaignForm
+            isActive={view === 'builder'}
   sdgs={sdgs}
   onCampaignSaved={handleCampaignCreated}
   onBackToWelcome={() => setView('welcome')}
@@ -218,10 +231,13 @@ export default function App() {
           !loadingError &&
           view === 'details' &&
           selectedCampaign && (
-            <CampaignDetails
-              campaign={selectedCampaign}
-              onBack={showHistory}
-            />
+            <CampaignWorkspace
+         key={selectedCampaign.id}
+         campaign={selectedCampaign}
+         sdgs={sdgs}
+         onCampaignSaved={handleCampaignUpdated}
+         onBack={showHistory}
+              />
           )}
       </main>
       </div>

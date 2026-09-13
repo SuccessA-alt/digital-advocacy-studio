@@ -53,3 +53,21 @@ export type CampaignDraftResponse = {
   advocacyPlan: string
   successMeasures: string
 }
+
+export type CampaignVersion = {
+  id: number
+  campaignId: number
+  versionNumber: number
+  savedAt: string
+  title: string
+  problem: string
+  sdgId: number | null
+  sdgGoalNumber: number | null
+  sdgName: string | null
+  desiredOutcome: string
+  coreMessage: string
+  sharingMethod: string
+  decisionMaker: string
+  advocacyPlan: string
+  successMeasures: string
+}

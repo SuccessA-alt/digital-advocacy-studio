@@ -138,18 +138,21 @@ public CampaignDraftResponse draftCampaign(
           should be asked to do. Make recommendations specific to
           this campaign.
 
-          Approach and sequence
+          Approach 
           Explain the order of activities and how they work together
           to influence the decision-maker and achieve the goal.
           Include offline activities where they support the digital
           campaign. Keep the approach realistic for a small team.
 
-          Aim for 2000-4000 characters when that detail is useful.
-          Use less when sufficient. Never exceed 10000 characters.
+          Aim for 1500-2200 characters.
+          Keep all four subheadings. Give specific, practical recommendations
+          using concise sentences. Avoid repeating the problem or core message.
+          Never exceed 10000 characters.  
 
         - successMeasures: explain how the user will measure progress
           and eventual achievement of the campaign goal.
-          Suggest 3-5 relevant indicators. For each, explain:
+         Suggest 3 relevant indicators. Use 1-2 concise sentences per indicator.
+        For each, explain:
           what to measure, how to collect the information, and when
           to review it.
 
@@ -159,7 +162,7 @@ public CampaignDraftResponse draftCampaign(
 
           Clearly label proposed targets and review dates as suggestions.
           If a baseline is unknown, suggest establishing it first.
-          Aim for 800-1500 characters. Never exceed 5000 characters.
+        Aim for 500-800 characters. Never exceed 5000 characters.
 
         Use plain text suitable for editable text boxes. Use short
         paragraphs and numbered actions where helpful. Do not use
