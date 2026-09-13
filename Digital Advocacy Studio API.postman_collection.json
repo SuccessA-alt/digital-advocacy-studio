@@ -1,0 +1,900 @@
+{
+  "info": {
+    "_postman_id": "1596b9aa-b27a-46c7-992b-3b2172451efb",
+    "name": "Digital Advocacy Studio API",
+    "description": "Digital Advocacy Studio API\n\nAPI documentation for Digital Advocacy Studio for Coding Black Females with London Metal Exchange Fullstack Engineering Bootcamp\n\nThis API supports creating and managing advocacy campaigns, viewing saved versions, downloading PDFs, retrieving SDGs, and generating AI drafts and reviews.\n\nThis collection documents the application's 13 backend endpoints for campaigns, version history, PDF downloads,  \nSustainable Development Goals and AI assistance.\n\nAPI Base URL: [http://localhost:8080](http://localhost:8080)  \nAuthentication: None required.\n\nBefore sending requests, run the backend and MySQL locally.\n\nHere the “localhost” refers to the computer running Postman.\n\nHow to test:\n\n1. Send Get all SDGs to view the available goals.\n    \n2. Send Create campaign using its example JSON body.\n    \n3. Copy the campaign id returned by the POST response.\n    \n4. Replace campaign ID 26 in the other request URLs  \n    with your newly created campaign's ID.\n    \n5. Retrieve and update that campaign.\n    \n6. Send Get campaign versions and copy a version's id.\n    \n7. Replace version record ID 9 in the version request  \n    URLs with the returned version ID.\n    \n8. Try both PDF download endpoints.\n    \n9. Test Delete campaign last.\n    \n10. Retrieve the deleted campaign to confirm a 404 response.\n    \n\nSend requests individually.  \nSaved examples show previous responses; their IDs may not exist in your database.\n\nThe AI endpoints require the backend's AI provider configuration and may consume API credits.\n\nThe AI review endpoint remains available in the backend but is not used by the current frontend as that feature was deleted in the second version of the app.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "56125797",
+    "_collection_link": "https://go.postman.co/collection/56125797-1596b9aa-b27a-46c7-992b-3b2172451efb?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Get all SDGs",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/sdgs",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "sdgs"
+          ]
+        },
+        "description": "Retrieves all Sustainable Development Goals available in the app.\n\nMethod: GET  \nURL: [http://localhost:8080/api/sdgs](http://localhost:8080/api/sdgs)\n\nAuthentication: None required.  \nPath parameters: None.  \nQuery parameters: None.  \nRequest body: None.\n\nSuccessful response:  \n200 OK  \nContent-Type: application/json\n\nThe response is an array of SDG objects. Each object contains:\n\n- id: integer — the SDG's database identifier.\n    \n- goalNumber: integer — the Sustainable Development Goal number.\n    \n- name: string — the goal's name.\n    \n\nExample use:  \nPopulate the SDG selection list when creating a campaign."
+      },
+      "response": [
+        {
+          "name": "200 - Get all SDGs",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/sdgs",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "sdgs"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Length",
+              "value": "995"
+            },
+            {
+              "key": "Date",
+              "value": "Sun, 13 Sep 2026 03:07:36 GMT"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "[\n    {\n        \"goalNumber\": 1,\n        \"name\": \"No Poverty\",\n        \"id\": 1\n    },\n    {\n        \"goalNumber\": 2,\n        \"name\": \"Zero Hunger\",\n        \"id\": 2\n    },\n    {\n        \"goalNumber\": 3,\n        \"name\": \"Good Health and Well-being\",\n        \"id\": 3\n    },\n    {\n        \"goalNumber\": 4,\n        \"name\": \"Quality Education\",\n        \"id\": 4\n    },\n    {\n        \"goalNumber\": 5,\n        \"name\": \"Gender Equality\",\n        \"id\": 5\n    },\n    {\n        \"goalNumber\": 6,\n        \"name\": \"Clean Water and Sanitation\",\n        \"id\": 6\n    },\n    {\n        \"goalNumber\": 7,\n        \"name\": \"Affordable and Clean Energy\",\n        \"id\": 7\n    },\n    {\n        \"goalNumber\": 8,\n        \"name\": \"Decent Work and Economic Growth\",\n        \"id\": 8\n    },\n    {\n        \"goalNumber\": 9,\n        \"name\": \"Industry, Innovation and Infrastructure\",\n        \"id\": 9\n    },\n    {\n        \"goalNumber\": 10,\n        \"name\": \"Reduced Inequalities\",\n        \"id\": 10\n    },\n    {\n        \"goalNumber\": 11,\n        \"name\": \"Sustainable Cities and Communities\",\n        \"id\": 11\n    },\n    {\n        \"goalNumber\": 12,\n        \"name\": \"Responsible Consumption and Production\",\n        \"id\": 12\n    },\n    {\n        \"goalNumber\": 13,\n        \"name\": \"Climate Action\",\n        \"id\": 13\n    },\n    {\n        \"goalNumber\": 14,\n        \"name\": \"Life Below Water\",\n        \"id\": 14\n    },\n    {\n        \"goalNumber\": 15,\n        \"name\": \"Life on Land\",\n        \"id\": 15\n    },\n    {\n        \"goalNumber\": 16,\n        \"name\": \"Peace, Justice and Strong Institutions\",\n        \"id\": 16\n    },\n    {\n        \"goalNumber\": 17,\n        \"name\": \"Partnerships for the Goals\",\n        \"id\": 17\n    }\n]"
+        }
+      ]
+    },
+    {
+      "name": "Get all campaigns",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/campaigns",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "campaigns"
+          ]
+        },
+        "description": "Retrieves all saved advocacy campaigns.\n\nMethod: GET  \nURL: [http://localhost:8080/api/campaigns](http://localhost:8080/api/campaigns)  \nAuthentication: None  \nPath parameters: None  \nQuery parameters: None  \nRequest body: None\n\nSuccess response: 200 OK  \nContent type: application/json\n\nReturns an array of campaign objects containing:\n\n- id: integer\n    \n- title, problem, desiredOutcome, coreMessage, sharingMethod,  \n    decisionMaker, advocacyPlan and successMeasures: strings\n    \n- sdg: an object containing id, goalNumber and name, or null\n    \n- createdAt and updatedAt: date-time strings\n    \n\nReturns an empty array \\[\\] when no campaigns exist."
+      },
+      "response": [
+        {
+          "name": "200 - Get all campaigns",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/campaigns",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "campaigns"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Date",
+              "value": "Sun, 13 Sep 2026 15:43:44 GMT"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "[\n    {\n        \"advocacyPlan\": \"Collect photographs and contact the council.\",\n        \"coreMessage\": \"Everyone deserves a clean and healthy local park.\",\n        \"createdAt\": \"2026-08-20T09:59:41.864388\",\n        \"decisionMaker\": \"The local council\",\n        \"desiredOutcome\": \"The council provides more bins and weekly collections.\",\n        \"id\": 2,\n        \"problem\": \"Our local parks have increasing amounts of litter.\",\n        \"sdg\": {\n            \"goalNumber\": 11,\n            \"name\": \"Sustainable Cities and Communities\",\n            \"id\": 11\n        },\n        \"sharingMethod\": \"Community meetings and social media.\",\n        \"successMeasures\": \"More bins, weekly collections and less visible litter.\",\n        \"title\": \"Cleaner Local Parks\",\n        \"updatedAt\": \"2026-08-20T09:59:41.864388\"\n    },\n    {\n        \"advocacyPlan\": \"Write a policy brief addressing these issues\",\n        \"coreMessage\": \"No child should be left behind because of financial issues from their family\",\n        \"createdAt\": \"2026-08-20T15:17:49.198289\",\n        \"decisionMaker\": \"School education boards. department of education and school administrators \",\n        \"desiredOutcome\": \"Provide neccessary support to children from lower income\\nEquip parents with the right support to provide for their kids\\nGovernment should provide free school meals for every child \",\n        \"id\": 3,\n        \"problem\": \"Children from lower income background lack the necessary support to begin their studies in the coming year due to poor financial support from their families. They would need new study materials, uniforms, stipends for lunch and extra curricular activities\",\n        \"sdg\": {\n            \"goalNumber\": 4,\n            \"name\": \"Quality Education\",\n            \"id\": 4\n        },\n        \"sharingMethod\": \"social media: linkedin and instagram\",\n        \"successMeasures\": \"When action is being taken from the policy brief and the neccesary support is provided for example free meals (lunch) for kids\",\n        \"title\": \"Back to school supplies\",\n        \"updatedAt\": \"2026-08-20T15:17:49.198318\"\n    },\n    {\n        \"advocacyPlan\": \"organise a school town hall meeting\",\n        \"coreMessage\": \"The core message is to treat AI as a tool and not use it to limit your thinking\",\n        \"createdAt\": \"2026-09-03T13:53:07.612034\",\n        \"decisionMaker\": \"schools\",\n        \"desiredOutcome\": \"AI used to empower people and not used for escalating inequalities\",\n        \"id\": 4,\n        \"problem\": \"People are using AI for malicious moves, instead of solving problems with it. AI can be impactful if used to solve problems and not used to create inequalities. AI should reduce inequalities and not escalate them\",\n        \"sdg\": {\n            \"goalNumber\": 10,\n            \"name\": \"Reduced Inequalities\",\n            \"id\": 10\n        },\n        \"sharingMethod\": \"social media, linkein, youtube and instagram\",\n        \"successMeasures\": \"when30 people attend the meeting and share their ideas and resources to address these challlenges\",\n        \"title\": \"AI for Impact\",\n        \"updatedAt\": \"2026-09-03T13:53:07.612061\"\n    },\n    {\n        \"advocacyPlan\": \"make the campaign advocacy communication fliers and strategy\",\n        \"coreMessage\": \"do not dispose your trash based on vibes, do the right thing\",\n        \"createdAt\": \"2026-09-03T14:24:12.936316\",\n        \"decisionMaker\": \"residents\",\n        \"desiredOutcome\": \"I want to reduce the amount of diseases people can get from doing this and not disposing their trash properly\",\n        \"id\": 5,\n        \"problem\": \"Residents don't obey environmental laws and throw their trash into whichever designated bin they prefer, instead of sticking only to recyclable items. Everything is trash, and because this is not obeyed, it makes it hard for the environmental workers and trash collectors to do their job properly\",\n        \"sdg\": {\n            \"goalNumber\": 6,\n            \"name\": \"Clean Water and Sanitation\",\n            \"id\": 6\n        },\n        \"sharingMethod\": \"resident facebook groups, dooor to door awareness, fliers and social media (whatsapp and instagram)\",\n        \"successMeasures\": \"When there are reduced trash being visible in the neighbourhood\",\n        \"title\": \"keep the environment clean\",\n        \"updatedAt\": \"2026-09-03T14:24:12.936488\"\n    },\n    {\n        \"advocacyPlan\": \"write a petition to the director of the nhs trust where i experienced such delay\",\n        \"coreMessage\": \"employ more staffs, improve the quality of life of nhs professuinals and reduce the waiting time\",\n        \"createdAt\": \"2026-09-03T14:31:40.250346\",\n        \"decisionMaker\": \"nhs board of directors\",\n        \"desiredOutcome\": \"using data for advocacy to reduce the waiting times at the nhs\",\n        \"id\": 6,\n        \"problem\": \"people cant see medical professionals for their ailment because of long wait times in NHS trusts\",\n        \"sdg\": {\n            \"goalNumber\": 3,\n            \"name\": \"Good Health and Well-being\",\n            \"id\": 3\n        },\n        \"sharingMethod\": \"facebook, instagram and ttiktok\",\n        \"successMeasures\": \"average waiting times reduced by 80%\\n\",\n        \"title\": \"reduce the waiting times at the nhs\",\n        \"updatedAt\": \"2026-09-03T14:31:40.250375\"\n    },\n    {\n        \"advocacyPlan\": \"Speak with affected families and existing support providers to document the main barriers, gaps, and preferred forms of help. Then request a meeting with the relevant local authority or service coordinator to present the findings and propose a clear referral and information system. Editable prompt: add the neighbourhood, key services, and preferred decision-maker.\",\n        \"coreMessage\": \"No family should have to skip meals because support is difficult to find or afford. Local decision-makers should strengthen food assistance and provide a clear, easy-to-use route to reliable help, contributing to SDG 1: No Poverty.\",\n        \"createdAt\": \"2026-09-12T19:11:13.574824\",\n        \"decisionMaker\": \"Relevant local authority or community-service decision-maker responsible for food assistance, welfare support, family services, or coordination with local food providers.\",\n        \"desiredOutcome\": \"Improve access to affordable, sufficient food for low-income households, especially families with children, by making local support easier to find and more reliable. Suggested target: agree on a practical local access plan within the next 6–12 months.\",\n        \"id\": 7,\n        \"problem\": \"Families in our neighbourhood are skipping meals because they cannot afford enough food. This affects low-income households, especially families with children. Existing support is difficult to find, leaving people without reliable help.\",\n        \"sdg\": {\n            \"goalNumber\": 1,\n            \"name\": \"No Poverty\",\n            \"id\": 1\n        },\n        \"sharingMethod\": \"\",\n        \"successMeasures\": \"Progress could be measured by: a documented list of available food-support services; a clear, publicly accessible referral route; commitments from relevant services to keep information updated; reduced reports of families being unable to find help; and feedback from low-income households showing that support is easier to access. Editable prompt: add a suggested timeframe and any baseline information available.\",\n        \"title\": \"Reliable Food Support for Local Families\",\n        \"updatedAt\": \"2026-09-12T19:11:13.57485\"\n    },\n    {\n        \"advocacyPlan\": \"Define the target location and graduate groups affected. Gather testimonies or a short survey about unemployment, AI-related recruitment changes, unpaid work and inflation pressures. Use the findings to request a meeting with relevant government representatives and employers, and propose specific actions such as funded graduate placements, stronger career services, transparent AI-assisted recruitment and incentives for entry-level hiring.\",\n        \"coreMessage\": \"Graduates need a fair pathway into decent work. As employers adopt AI and living costs rise, government and organisations should support skills development, transparent recruitment, paid entry-level opportunities, and responsible use of technology so graduates can participate in economic growth.\",\n        \"createdAt\": \"2026-09-12T19:20:03.810085\",\n        \"decisionMaker\": \"Relevant government ministries responsible for employment, education and economic development, together with major employers and industry bodies that set graduate recruitment and AI-use practices.\",\n        \"desiredOutcome\": \"Encourage government and employers to expand fair entry-level opportunities, improve graduate career support, and ensure that artificial intelligence is used responsibly rather than eliminating suitable opportunities for new graduates. Suggested timeframe: agree on specific commitments within 12 months.\",\n        \"id\": 8,\n        \"problem\": \"graduates from universities are finding it hard to get a job due to massive use of ai in companies and different organisations, and bad government and inflation\",\n        \"sdg\": {\n            \"goalNumber\": 8,\n            \"name\": \"Decent Work and Economic Growth\",\n            \"id\": 8\n        },\n        \"sharingMethod\": \"\",\n        \"successMeasures\": \"A documented summary of graduate experiences; meetings held with relevant decision-makers; public commitments or written responses from government or employers; proposed or funded graduate placements and training opportunities; clearer disclosure of AI use in recruitment; and improvement in the number of graduates accessing decent paid work. Add a baseline and target figures once local data is available.\",\n        \"title\": \"Fair Graduate Employment in an AI-Driven Economy\",\n        \"updatedAt\": \"2026-09-12T19:20:03.810102\"\n    },\n    {\n        \"advocacyPlan\": \"Map existing food assistance, benefits advice and referral services in the neighbourhood; speak with affected families and frontline workers to identify gaps; then request a meeting with the responsible local authority or service coordinator to propose one clear, regularly updated access point. Add the specific neighbourhood and timeframe: [editable prompt].\",\n        \"coreMessage\": \"No family should have to skip meals because support is difficult to find. Local services should make food assistance clear, accessible and reliable for households facing financial hardship, supporting progress towards SDG 1: No Poverty.\",\n        \"createdAt\": \"2026-09-12T19:27:26.385832\",\n        \"decisionMaker\": \"The relevant local authority, community services department, or elected representative responsible for poverty reduction, food support and referrals.\",\n        \"desiredOutcome\": \"Create an easy-to-find, accessible local pathway to regular food assistance for low-income households, especially families with children. Suggested target: agree and begin implementing a local referral and support plan within [timeframe].\",\n        \"id\": 9,\n        \"problem\": \"Families in our neighbourhood are skipping meals because they cannot afford enough food. This affects low-income households, especially families with children. Existing support is difficult to find, leaving people without reliable help.\",\n        \"sdg\": {\n            \"goalNumber\": 1,\n            \"name\": \"No Poverty\",\n            \"id\": 1\n        },\n        \"sharingMethod\": \"\",\n        \"successMeasures\": \"Progress could be shown by: a completed and publicly available directory of local support; an agreed referral process between relevant services; evidence that families can access information through suitable channels; increased awareness among affected households; and feedback showing that support is easier to find and more reliable. Add a baseline, targets and review date: [editable prompt].\",\n        \"title\": \"Reliable Food Support for Families\",\n        \"updatedAt\": \"2026-09-12T19:27:26.385851\"\n    },\n    {\n        \"advocacyPlan\": \"Map the food-support options currently available and identify where families face barriers, such as unclear information, eligibility requirements, opening times, transport, or limited capacity. Speak with affected families and local community workers to prioritise the most urgent gap. Please add the neighbourhood and any existing services to contact.\",\n        \"coreMessage\": \"No family should have to skip meals because support is difficult to find or afford. Local decision-makers should make food assistance easier to access, clearly signposted, and responsive to the needs of low-income households, contributing to SDG 1: No Poverty.\",\n        \"createdAt\": \"2026-09-12T19:34:03.671833\",\n        \"decisionMaker\": \"Suggested target: the local council or relevant public services lead responsible for poverty reduction, welfare support, community services, or food assistance. Please add the specific authority or role for your neighbourhood.\",\n        \"desiredOutcome\": \"Improve access to reliable, affordable food support so that families—especially households with children—do not have to skip meals. Suggested target: agree on a practical local improvement within the next 6–12 months.\",\n        \"id\": 10,\n        \"problem\": \"Families in our neighbourhood are skipping meals because they cannot afford enough food. This affects low-income households, especially families with children. Existing support is difficult to find, leaving people without reliable help.\",\n        \"sdg\": {\n            \"goalNumber\": 1,\n            \"name\": \"No Poverty\",\n            \"id\": 1\n        },\n        \"sharingMethod\": \"\",\n        \"successMeasures\": \"Progress could include: a clear, regularly updated directory of local food support; increased awareness among affected families; fewer reported barriers to finding help; improved coordination between relevant services; and an agreed action plan from the responsible decision-maker. Add a baseline, target number, and timeframe once local information is available.\",\n        \"title\": \"Reliable Food Support for Local Families\",\n        \"updatedAt\": \"2026-09-12T19:34:03.671878\"\n    },\n    {\n        \"advocacyPlan\": \"Speak with affected families and existing local support providers to identify the main barriers to finding help. Map available services, eligibility requirements and contact routes, then prepare a short proposal for a single, clearly publicised referral pathway. Add the preferred local authority or institution here: [editable prompt].\",\n        \"coreMessage\": \"No family should have to skip meals because help is difficult to find. Local services and decision-makers should make food support easy to locate, understand and access, with particular attention to households with children.\",\n        \"createdAt\": \"2026-09-12T19:39:54.208701\",\n        \"decisionMaker\": \"Relevant local authority or community-service decision-makers responsible for welfare support, food assistance, and coordination of local services.\",\n        \"desiredOutcome\": \"Create a clear, accessible local pathway to regular food assistance so that low-income households, especially families with children, can find and use support before they skip meals. Suggested initial target: agree on a practical local referral and support plan within [suggest timeframe].\",\n        \"id\": 11,\n        \"problem\": \"Families in our neighbourhood are skipping meals because they cannot afford enough food. This affects low-income households, especially families with children. Existing support is difficult to find, leaving people without reliable help.\",\n        \"sdg\": null,\n        \"sharingMethod\": \"\",\n        \"successMeasures\": \"Progress could be measured by: a completed and regularly updated map of available food support; agreement on a clear referral pathway; improved visibility of information through local channels; feedback from families that support is easier to find and access; and fewer reports of households being unable to identify available help. Add a proposed timeframe and baseline information here: [editable prompt].\",\n        \"title\": \"Reliable Food Support for Every Family\",\n        \"updatedAt\": \"2026-09-12T19:39:54.208724\"\n    },\n    {\n        \"advocacyPlan\": \"Speak with affected families and existing support providers to document the main barriers, gaps and urgent needs. Map current food assistance in the neighbourhood, identify who controls access or funding, and prepare a short proposal for a clearer referral pathway and more reliable support. Invite families and providers to help set a suggested target and timeframe.\",\n        \"coreMessage\": \"No family should have to skip meals because support is difficult to find or access. Local decision-makers should improve coordination, visibility and availability of food assistance for low-income households, especially families with children.\",\n        \"createdAt\": \"2026-09-12T19:44:22.276921\",\n        \"decisionMaker\": \"The relevant local authority, community services department, elected representative, or other institution responsible for coordinating food assistance and support services. Please identify the specific local decision-maker.\",\n        \"desiredOutcome\": \"Families experiencing food insecurity can find and access reliable, affordable food support through a clear local referral and assistance system. Suggested initial target: agree on a practical improvement within the next 3–6 months. Edit this timeframe to suit local conditions.\",\n        \"id\": 12,\n        \"problem\": \"Families in our neighbourhood are skipping meals because they cannot afford enough food. This affects low-income households, especially families with children. Existing support is difficult to find, leaving people without reliable help.\",\n        \"sdg\": null,\n        \"sharingMethod\": \"\",\n        \"successMeasures\": \"Progress could include: a documented map of available support; an agreed, easy-to-find referral route; decision-maker commitments to specific improvements; increased awareness among affected families; fewer reported cases of people being unable to find help; and evidence that families with children can access food support more reliably. Define how these measures will be collected locally.\",\n        \"title\": \"Reliable Food Support for Neighbourhood Families\",\n        \"updatedAt\": \"2026-09-12T19:44:22.276967\"\n    },\n    {\n        \"advocacyPlan\": \"Map the food-support services currently available and document how families find them, where gaps occur and what prevents access. Speak with affected families and frontline workers, with consent and appropriate safeguarding, then use the findings to request a meeting with the relevant local authority or service coordinator. Add the local area and preferred timeframe: [editable prompt].\",\n        \"coreMessage\": \"No family in our neighbourhood should have to skip meals because support is difficult to find. Local services and decision-makers should make food assistance easier to access, clearly communicated and dependable.\",\n        \"createdAt\": \"2026-09-12T19:47:25.827436\",\n        \"decisionMaker\": \"Suggested targets: the local authority or relevant community services department, alongside local food-support providers and schools or family services that regularly identify households in need.\",\n        \"desiredOutcome\": \"Create a clear, accessible and reliable way for low-income households—especially families with children—to find and receive enough food. Suggested initial target: agree a practical local referral and support plan within the next 3–6 months.\",\n        \"id\": 13,\n        \"problem\": \"Families in our neighbourhood are skipping meals because they cannot afford enough food. This affects low-income households, especially families with children. Existing support is difficult to find, leaving people without reliable help.\",\n        \"sdg\": null,\n        \"sharingMethod\": \"\",\n        \"successMeasures\": \"Progress could be measured by: a published, easy-to-find directory or referral pathway; participating services agreeing how referrals will work; reduced reports of families being unable to locate help; increased successful referrals; and a documented plan to address remaining gaps. Add a baseline and review date: [editable prompt].\",\n        \"title\": \"Reliable Food Support for Local Families\",\n        \"updatedAt\": \"2026-09-12T19:47:25.827452\"\n    },\n    {\n        \"advocacyPlan\": \"Map the food-support services currently available, including eligibility, locations, opening times and referral requirements. Speak with affected families and service providers to identify the main barriers, then present the findings to the relevant local authority or coordinating body with a request for a simple, regularly updated access guide and clearer referral process.\",\n        \"coreMessage\": \"No family in our neighbourhood should have to skip meals because support is difficult to find. Local services and decision-makers should make food assistance easier to identify, access and use consistently.\",\n        \"createdAt\": \"2026-09-12T19:50:07.516349\",\n        \"decisionMaker\": \"The relevant local authority, community services department, and organisations responsible for coordinating food assistance in the neighbourhood.\",\n        \"desiredOutcome\": \"Create a clear, accessible and reliable way for low-income households—especially families with children—to find and receive adequate food support. Suggested target: agree on a local improvement plan and begin implementation within [suggest timeframe].\",\n        \"id\": 14,\n        \"problem\": \"Families in our neighbourhood are skipping meals because they cannot afford enough food. This affects low-income households, especially families with children. Existing support is difficult to find, leaving people without reliable help.\",\n        \"sdg\": null,\n        \"sharingMethod\": \"\",\n        \"successMeasures\": \"Progress could be measured by: a completed and publicly accessible directory of local food support; clearer referral or signposting arrangements; feedback from affected families showing improved awareness of available help; fewer reported barriers to accessing support; and agreement on who will maintain the information. Add a suggested timeframe and local baseline where available: [insert details].\",\n        \"title\": \"Reliable Food Support for Neighbourhood Families\",\n        \"updatedAt\": \"2026-09-12T19:50:07.516377\"\n    },\n    {\n        \"advocacyPlan\": \"Document the problem through conversations with affected families and local support providers, while protecting people’s privacy. Map existing food assistance and identify gaps in availability, eligibility, opening times and referral routes. Use the findings to request a meeting with the relevant decision-maker and propose one clear, regularly updated access point for support information.\",\n        \"coreMessage\": \"No family in our neighbourhood should have to skip meals because support is difficult to find. Local services and decision-makers should make food assistance easier to locate, access and rely on.\",\n        \"createdAt\": \"2026-09-12T20:18:04.322016\",\n        \"decisionMaker\": \"Suggested target: the local council or other institution responsible for community support, food assistance coordination and information services. Edit this to name the specific decision-maker.\",\n        \"desiredOutcome\": \"Create a clear, accessible and reliable way for low-income households—especially families with children—to find and receive food support when they need it. Suggested initial timeframe: identify and agree a local response within 3 months.\",\n        \"id\": 15,\n        \"problem\": \"Families in our neighbourhood are skipping meals because they cannot afford enough food. This affects low-income households, especially families with children. Existing support is difficult to find, leaving people without reliable help.\",\n        \"sdg\": null,\n        \"sharingMethod\": \"\",\n        \"successMeasures\": \"Progress could include: a confirmed decision-maker and response timeline; a complete, publicly accessible list of local food-support options; fewer reported barriers to finding help; more households successfully connected with suitable support; and an agreed process for keeping information accurate. Add a specific baseline and target after local evidence is collected.\",\n        \"title\": \"Reliable Food Support for Local Families\",\n        \"updatedAt\": \"2026-09-12T20:18:04.322141\"\n    },\n    {\n        \"advocacyPlan\": \"Speak with affected families and local support providers to identify the main barriers to finding help. Map existing food assistance and referral services, noting eligibility, opening times, locations, languages, and gaps. Use this information to prepare a short proposal for the relevant local authority. Editable prompt: Which neighbourhood or local authority is the campaign focused on?\",\n        \"coreMessage\": \"No family should have to skip meals because support is difficult to find. Local decision-makers should make food assistance easier to access, clearly signposted, and responsive to the needs of families experiencing poverty, supporting progress toward SDG 1: No Poverty.\",\n        \"createdAt\": \"2026-09-12T22:30:23.358878\",\n        \"decisionMaker\": \"Local government officials responsible for social services, poverty reduction, community support, and coordination with food assistance providers.\",\n        \"desiredOutcome\": \"Create a clear, accessible local pathway to regular food assistance so low-income households, especially families with children, can find and receive help before they skip meals. Suggested target: agree on an initial plan and timeline with relevant local services within the next 3–6 months.\",\n        \"id\": 16,\n        \"problem\": \"Families in our neighbourhood are skipping meals because they cannot afford enough food. This affects low-income households, especially families with children. Existing support is difficult to find, leaving people without reliable help.\",\n        \"sdg\": {\n            \"goalNumber\": 1,\n            \"name\": \"No Poverty\",\n            \"id\": 1\n        },\n        \"sharingMethod\": \"\",\n        \"successMeasures\": \"A current, easy-to-understand directory or referral pathway for local food assistance is published and shared through trusted community channels; affected families report that support is easier to find; local services agree on a named coordination contact and review process; barriers and unmet needs are documented and acted on. Suggested timeframe: review progress after 3 months and again after 6 months.\",\n        \"title\": \"Reliable Food Support for Local Families\",\n        \"updatedAt\": \"2026-09-12T22:30:23.359279\"\n    },\n    {\n        \"advocacyPlan\": \"Map the food support currently available in the neighbourhood, including eligibility, opening times, locations and referral requirements. Speak with affected families and frontline workers to identify the main barriers. Use the findings to request a single, regularly updated information route and a coordination meeting with the relevant local authority or service lead.\",\n        \"coreMessage\": \"No family in our neighbourhood should have to skip meals because support is difficult to find. Local services and community partners should make food assistance easy to identify, access and use without unnecessary barriers.\",\n        \"createdAt\": \"2026-09-12T22:33:03.721498\",\n        \"decisionMaker\": \"Suggested target: the local authority or community services lead responsible for coordinating food support, working with schools, health services and local food providers.\",\n        \"desiredOutcome\": \"Establish a clear, reliable local pathway to free or affordable food support for families experiencing hardship, with particular attention to households with children. Suggested initial timeframe: agree a practical plan within three months.\",\n        \"id\": 17,\n        \"problem\": \"Families in our neighbourhood are skipping meals because they cannot afford enough food. This affects low-income households, especially families with children. Existing support is difficult to find, leaving people without reliable help.\",\n        \"sdg\": null,\n        \"sharingMethod\": \"\",\n        \"successMeasures\": \"A current directory or referral pathway is publicly available and shared through places families already use; affected families report that support is easier to find; participating services have agreed who will update information and how often; referrals or signposting to suitable food support increase. Suggested target and timeframe: add a specific number of families, services and review date after local information is collected.\",\n        \"title\": \"Make Local Food Support Easy to Find and Access\",\n        \"updatedAt\": \"2026-09-12T22:33:03.721656\"\n    },\n    {\n        \"advocacyPlan\": \"Map the food support currently available and identify gaps in eligibility, opening times, locations and referral routes. Speak with affected families and frontline workers to confirm barriers, then request a meeting with the responsible local authority or council team. Editable prompt: add the neighbourhood name and any existing services or contacts.\",\n        \"coreMessage\": \"No family in our neighbourhood should have to skip meals because support is difficult to find. Local decision-makers should make food assistance easy to identify, access and use, advancing SDG 2: Zero Hunger.\",\n        \"createdAt\": \"2026-09-12T22:40:05.08669\",\n        \"decisionMaker\": \"Local authority or council responsible for community services, food support and family welfare, working with relevant schools, health services and community providers.\",\n        \"desiredOutcome\": \"Create a clear, accessible and reliable local pathway to emergency and ongoing food support for low-income households, especially families with children. Suggested initial target: agree a practical local referral and support plan within 3 months.\",\n        \"id\": 18,\n        \"problem\": \"Families in our neighbourhood are skipping meals because they cannot afford enough food. This affects low-income households, especially families with children. Existing support is difficult to find, leaving people without reliable help.\",\n        \"sdg\": {\n            \"goalNumber\": 2,\n            \"name\": \"Zero Hunger\",\n            \"id\": 2\n        },\n        \"sharingMethod\": \"\",\n        \"successMeasures\": \"A current, easy-to-find directory of food support is available in places families use; referral routes are clearly explained; local services coordinate or share information; affected families report that support is easier to find and access; and fewer families report skipping meals. Suggested timeframe: review progress after 3 months and again after 6 months.\",\n        \"title\": \"Reliable Food Support for Local Families\",\n        \"updatedAt\": \"2026-09-12T22:40:05.086809\"\n    },\n    {\n        \"advocacyPlan\": \"Audiences\\nPrimary decision-makers are the local authority, social services leaders, and local organisations that provide or coordinate food assistance. Secondary audiences include schools, health centres, community groups, faith organisations, housing providers, and elected representatives who can refer families and press for improvements. People affected by food insecurity should help shape the campaign, participate safely, and share experiences only with informed consent.\\n\\nChannels\\nUse a simple campaign page or shared information document as the central source for updates. Use neighbourhood social media groups and messaging apps to reach residents quickly, while printed leaflets and posters in schools, clinics, libraries, food outlets, and community centres reach people with limited digital access. Email is suitable for formal requests to decision-makers and partner organisations. Short community meetings or listening sessions can gather evidence and build support; summaries can then be shared digitally.\\n\\nActions and tactics\\n1. Establish a baseline by speaking with residents and frontline workers about what support exists, how people currently find it, and the main barriers. Do not collect identifying information unless necessary and consented to.\\n2. Map available food assistance, eligibility requirements, opening times, languages, contact details, transport information, and referral routes. Mark unknown details as needing verification rather than presenting them as facts.\\n3. Ask residents and partners to sign a public or private letter calling for one reliable, regularly updated food-support guide and clearer referral information.\\n4. Publish short, accessible posts explaining where people can seek help, using plain language and translated versions where needed. Include a contact method for corrections and updates.\\n5. Ask schools, clinics, community groups, and housing providers to display and share the guide and nominate a contact person for updates.\\n6. Request a meeting with the relevant authority and service providers. Present anonymised findings, the number of supporting organisations, and specific recommendations: assign an information owner, set an update schedule, and provide consistent signposting across public services.\\n7. Share decision-maker responses publicly where appropriate, thank supportive partners, and use respectful follow-up messages if commitments are delayed.\\n\\nApproach and sequence\\nStart with listening and information mapping so the campaign is based on residents' needs and avoids directing people to inaccurate services. Build a verified guide and recruit trusted local partners before making the public ask. Launch the digital campaign with the guide, a concise explanation of the problem, and a clear request for action. Coordinate a short period of online sign-ons, partner sharing, and offline leaflet distribution to demonstrate community support. Then hold a meeting or small public briefing with decision-makers, combining lived experience, anonymised findings, and the proposed practical solution. After the meeting, publish a progress update and set a follow-up date. Keep the guide updated throughout, and adjust messages based on which audiences are not being reached. A small team can manage this through one shared contact list, one content calendar, and a weekly verification routine.\",\n        \"coreMessage\": \"Families in our neighbourhood are skipping meals because food costs are unaffordable and existing support is difficult to find. No family, especially no child, should be left without reliable access to food. We are asking local decision-makers and service providers to make food assistance easier to find, clearly signposted, regularly updated, and accessible through trusted community channels, advancing Goal 1: No Poverty.\",\n        \"createdAt\": \"2026-09-12T23:55:30.889024\",\n        \"decisionMaker\": \"The relevant local authority, social services department, and organisations responsible for coordinating or providing local food assistance.\",\n        \"desiredOutcome\": \"Within 6 months, low-income households—especially families with children—can easily find and access reliable food assistance in the neighbourhood. The campaign seeks a clear, regularly updated guide to available support, stronger coordination among local services, and action from the responsible local authority or service providers to reduce barriers to help.\",\n        \"id\": 19,\n        \"problem\": \"Families in our neighbourhood are skipping meals because they cannot afford enough food. This affects low-income households, especially families with children. Existing support is difficult to find, leaving people without reliable help.\",\n        \"sdg\": {\n            \"goalNumber\": 1,\n            \"name\": \"No Poverty\",\n            \"id\": 1\n        },\n        \"sharingMethod\": \"\",\n        \"successMeasures\": \"1. Access to accurate information. Measure whether a clear food-support guide exists, how many listed services have verified details, and whether it is updated on the proposed schedule. Collect this through a shared verification log and dated versions of the guide. Establish the baseline first; review weekly during the campaign and monthly afterward. Suggested target: all listed services have a named verification contact and update date within 3 months.\\n\\n2. Community reach and useful engagement. Measure guide views or downloads, direct enquiries, partner shares, and referrals from schools, clinics, and community groups. Use platform analytics, a simple enquiry log, and optional referral codes or “how did you hear about this?” questions. Review weekly. Suggested target: agree a realistic number after the first two weeks of baseline data.\\n\\n3. Community support for the request. Measure sign-ons, endorsements from local partners, and attendance at listening sessions or briefings. Collect through a consent-based sign-on form and attendance records. Review at campaign milestones. Suggested target: secure support from [insert realistic number] residents and [insert number] trusted local organisations within 8 weeks.\\n\\n4. Decision-maker response. Measure whether the responsible authority accepts a meeting, appoints an information owner, adopts an update process, or improves signposting. Record requests, responses, commitments, and deadlines in a campaign tracker. Review after each contact and at 1, 3, and 6 months. Suggested outcome target: a documented commitment to maintain reliable food-support information within 6 months.\\n\\n5. Evidence of improved access. Measure whether residents report that support is easier to find and whether referrals reach appropriate services. Use anonymous short surveys or interviews with residents and frontline workers, comparing results with the baseline. Review at 3 and 6 months. Interpret reach alongside these access indicators rather than treating online engagement alone as success.\",\n        \"title\": \"Reliable Food Support for Families in Our Neighbourhood\",\n        \"updatedAt\": \"2026-09-12T23:55:30.889143\"\n    },\n    {\n        \"advocacyPlan\": \"Audiences\\nPrimary decision-makers are the local authority’s relevant elected representatives, senior officers, and teams responsible for social support, public health, community services, or hardship assistance. Secondary audiences include food banks, schools, family support services, faith and community groups, health workers, housing organisations, and residents with lived experience. Supporters should help verify information, share the campaign, and provide anonymised evidence about barriers to access.\\n\\nChannels\\nUse a simple campaign webpage or shared information page as the central source for the campaign’s request and updates. U. Use email and short briefing documents for officials and service providers. Consider local media or community newsletters for wider visibility. Provide translated, mobile-friendly, and printable information where needed, while protecting people’s privacy.\\n\\nActions and tactics\\n1. Conduct a short listening exercise with residents and frontline organisations to document how people currently search for help, what information is missing, and which barriers are most common. Do not collect identifying details unless essential and consented to.\\n2. Map existing food and household-support services, including eligibility, opening times, referral requirements, languages, contact methods, and accessibility. Mark unknown or outdated information as [to verify].\\n3. Publish a one-page campaign brief asking the decision-maker to establish or improve a single, regularly updated referral pathway. Include a proposed update frequency, accessibility requirements, and a named team responsible for maintenance.\\n4. Ask residents and partner organisations to sign a public letter, submit short personal or organisational testimonies, and email or contact their local representatives. Offer a privacy-safe option for people who do not want their experiences published.\\n5. Ask schools, community groups, health workers, and local providers to share the campaign link and refer residents to verified support information.\\n6. Request a meeting with the decision-maker and present the evidence, service map, and proposed solution. Follow up publicly with agreed actions, responsible bodies, and dates, without revealing confidential information.\\n7. If progress is limited, coordinate a second wave of resident messages, partner endorsements, and a local media or community-newsletter briefing. Keep the request specific and constructive.\\n\\nApproach and sequence\\nStart by listening to affected families and checking available services, so the campaign is based on practical access problems rather than assumptions. Next, develop a concise proposal and secure endorsements from trusted local partners. Launch the public campaign with a clear request and a central information page, then direct supporters toward specific actions such as signing, emailing representatives, or attending a meeting. Use online meetings or an in-person roundtable to secure commitments from officials and providers. After the meeting, publish an action tracker and share updates through the same channels. Offline support, such as posters in schools, libraries, community centres, and food-distribution points, can reach residents who are less active online. Review progress monthly and adapt messages based on unanswered questions, outdated information, and feedback from families.\",\n        \"coreMessage\": \"Families in our neighbourhood are skipping meals because household budgets do not cover enough food, while existing support can be difficult to find. Families with children and other low-income households need a simple, trusted way to identify available food assistance and related support. We are asking [local authority or responsible institution] to coordinate, publish, and regularly update one accessible referral pathway, and to work with local providers so residents can get timely help.\",\n        \"createdAt\": \"2026-09-12T23:57:24.271946\",\n        \"decisionMaker\": \"The local authority or public body responsible for community support and coordinating local food assistance, working with relevant service providers.\",\n        \"desiredOutcome\": \"Within 6 months, the local authority and relevant community service providers should create and promote a clear, regularly updated referral pathway for emergency food and household support. Low-income households, especially families with children, should be able to find reliable information and receive help without facing confusing or repeated searches. Add local details such as the area, responsible authority, and proposed service standard: [insert preferred timeframe for referral or access].\",\n        \"id\": 20,\n        \"problem\": \"Families in our neighbourhood are skipping meals because they cannot afford enough food. This affects low-income households, especially families with children. Existing support is difficult to find, leaving people without reliable help.\",\n        \"sdg\": null,\n        \"sharingMethod\": \"\",\n        \"successMeasures\": \"1. Reliable baseline and service information: Measure how many relevant services have been mapped and how often their information is missing or outdated. Collect this through a shared service directory and verification calls or emails. Establish the baseline before launch and review monthly. Suggested target: verify 90% of listed services within 3 months.\\n\\n2. Decision-maker response: Measure whether the responsible authority acknowledges the request, attends a meeting, names a responsible team, and publishes a timetable or commitment. Collect dated copies of emails, meeting notes, and public statements. Review after each contact and at 3 and 6 months. Suggested target: obtain a written response and named lead within 8 weeks.\\n\\n3. Resident and partner participation: Measure signatories, direct messages to representatives, partner endorsements, referrals, and attendance at meetings. Use privacy-safe forms, platform analytics, and an activity log; avoid counting engagement without linking it to a requested action. Review weekly during campaign peaks and monthly afterward. Suggested target: set after establishing the likely supporter base.\\n\\n4. Access to information: Measure visits to the central information page, clicks or calls to support providers, and requests for translated, printed, or accessible versions. Use privacy-respecting analytics, voluntary referral codes, and partner feedback. Review monthly. Suggested target: establish a first-month baseline, then seek a sustained increase over the following 3 months.\\n\\n\",\n        \"title\": \"Make Local Food Support Easy to Find and Access\",\n        \"updatedAt\": \"2026-09-12T23:57:24.271975\"\n    },\n    {\n        \"advocacyPlan\": \"Audiences\\nPrimary decision-makers are the local authority, elected representatives, and public officials responsible for social services, community support, public health, or poverty reduction. Secondary audiences include food banks, schools, childcare settings, health and family services, housing providers, faith groups, community organisations, and local businesses. Families affected by food insecurity should help shape the campaign and, where safe and appropriate, share anonymised experiences. Residents and local supporters can provide public backing.\\n\\nChannels\\nUse a simple campaign webpage or shared information page as the central source for the latest food-support information. Use Facebook groups, WhatsApp community groups, local email lists, and community noticeboards to reach families and trusted intermediaries. Use short videos, graphics, and plain-language posts to explain where help is available. Send a concise briefing and request for action to councillors, local officials, schools, health professionals, and service providers. Use local media or community radio if available, while avoiding disclosure of personal stories without informed consent.\\n\\nActions and tactics\\n1. Map existing food support with local partners. Record locations, eligibility, opening times, referral requirements, languages, accessibility information, and contact details. Mark unknown information as needing verification.\\n2. Ask families and frontline workers what makes support difficult to find or use. Collect anonymous responses through a short survey, listening session, or trusted community partner.\\n3. Publish a clear, mobile-friendly directory in plain language and, where possible, relevant community languages. Assign responsibility for checking updates at least monthly.\\n4. Create a specific public request: the local authority should coordinate, maintain, and promote one reliable food-support information route, with input from affected families and providers.\\n5. Mobilise supporters with a sign-on letter, coordinated messages, and respectful requests to councillors and officials. Ask supporters to share the directory, contact decision-makers, and attend a public meeting or consultation.\\ns.\\n\\nApproach and sequence\\nStart by listening to affected families and mapping current services so the campaign is accurate and grounded in need. Next, build a small coalition of providers and trusted community organisations, agree what information can be shared, and establish a baseline for how easily families currently find help. Publish an initial directory only after reasonable verification, clearly labelling information that still needs confirmation.\\n\\nThen launch a focused digital campaign around one achievable request: a coordinated, maintained food-support information service. Share the directory through trusted channels, gather public endorsements, and send a concise evidence-based briefing to the decision-maker. Coordinate a short period of supporter action, such as emails, calls, or messages followed by a meeting request. Where possible, hold an offline listening session or community meeting and submit its findings to the authority.\\n\\nAfter the meeting, publish a plain-language response showing what was requested, what the authority agreed to, and what remains unresolved. If there is no response, use follow-up messages, a council or public meeting question, and local media engagement. Review directory use and family feedback monthly, update tactics based on what people actually need, and celebrate only verified improvements.\",\n        \"coreMessage\": \"Families in our neighbourhood are skipping meals because food costs are unaffordable, while information about available support is difficult to find. \",\n        \"createdAt\": \"2026-09-12T23:59:02.599696\",\n        \"decisionMaker\": \"The local authority or public agency responsible for community support, working with food banks, schools, health services, and other local food-assistance providers.\",\n        \"desiredOutcome\": \"Within the next 6–12 months, local authorities and community service providers should create and promote a clear, regularly updated way for low-income households—especially families with children—to find free or affordable food support.\",\n        \"id\": 21,\n        \"problem\": \"Families in our neighbourhood are skipping meals because they cannot afford enough food. This affects low-income households, especially families with children. Existing support is difficult to find, leaving people without reliable help.\",\n        \"sdg\": null,\n        \"sharingMethod\": \"\",\n        \"successMeasures\": \"1. Access to reliable information. Measure the number of food-support listings verified and the percentage with complete details such as location, opening times, eligibility, and contact information. Collect this through a shared directory tracker and provider confirmations. Review monthly. Suggested initial target: verify all priority services within 8 weeks and keep information current thereafter.\\n\\n2. Family ability to find help. Establish a baseline first through an anonymous survey or short interviews asking whether families know where to seek food support and whether they can access the information. Repeat at baseline, 3 months, and 6 months. Suggested target: a clear improvement in the proportion reporting that information is easy to find.\\n\\n3. Decision-maker response. Track briefing delivery, meeting requests, meetings held, written responses, named officials, and formal commitments. Keep copies of correspondence and meeting notes. Review after each advocacy milestone and at 3 and 6 months. Suggested target: obtain a formal response and a commitment to maintain and promote a coordinated information route.\\n\\n4. Meaningful supporter action. Measure sign-ons, direct messages or emails to decision-makers, partner organisations sharing the directory, and attendance at meetings. Use platform analytics and a simple action log, reviewed weekly during campaign pushes and monthly overall. Interpret reach alongside actions that support the policy request.\\n\\n5. Evidence of improved support access. With providers and families, track appropriate referrals or enquiries linked to the directory where this can be done safely and without collecting unnecessary personal data. Review monthly and compare with the baseline. Suggested target: demonstrate increasing use and identify remaining barriers, while recognising that wider food insecurity may require longer-term measures beyond this campaign.\",\n        \"title\": \"food for everyone\",\n        \"updatedAt\": \"2026-09-12T23:59:02.599722\"\n    },\n    {\n        \"advocacyPlan\": \"Audiences\\nPrimary decision-makers are the local authority teams responsible for welfare, community, and family services, alongside managers of local food-support providers. Secondary audiences include schools, health and family services, housing providers, faith groups, community centres, parent networks, and local elected representatives. Families affected by food insecurity should help shape the campaign and test whether information is understandable and usable.\\n\\nChannels\\nUse a simple campaign webpage or shared information document as the central source of verified support information. Use Facebook groups, WhatsApp community networks, local email lists, school newsletters, community noticeboards, and SMS or messaging where appropriate to reach families and trusted intermediaries. Use email and short briefing documents for decision-makers. Local media or a community newsletter may help build public attention, but only with consent and without identifying families who need support.\\n\\nActions and tactics\\n1. Map existing food-support services, eligibility requirements, opening times, referral methods, languages, accessibility information, and contact details. Mark unknown information as needing confirmation.\\n2. Ask families and frontline workers what prevents people from finding or using support. Collect anonymous stories or short survey responses; do not request unnecessary personal details.\\n3. Prepare a one-page proposal asking the local authority to coordinate a regularly updated directory or referral pathway, assign responsibility for maintaining it, and provide information in accessible formats and relevant community languages.\\n4. Recruit trusted partners, such as schools, community groups, health services, and food providers, to endorse the proposal and distribute the verified information.\\n5. Run a digital sign-on or email action asking the responsible official or institution to meet with campaign representatives and publish a concrete coordination plan.\\n6. Share practical, non-stigmatising messages explaining where people can seek help now, while clearly noting that information should be checked before publication.\\n7. Hold a small in-person meeting or roundtable with families, providers, and officials, then publish agreed next steps and follow up publicly on deadlines.\\n\\n\",\n        \"coreMessage\": \"Families in our neighbourhood are skipping meals because food costs are unaffordable, while existing support is difficult to find. Children and low-income households should not be left without reliable help because information is unclear or scattered. We are asking the local authority and food-support providers to coordinate a simple, accessible, regularly updated referral pathway and promote it through trusted community channels.\",\n        \"createdAt\": \"2026-09-13T01:41:25.726426\",\n        \"decisionMaker\": \"Local authority officials responsible for community services, welfare support, and family services, working with local food banks, charities, schools, and other food-support providers.\",\n        \"desiredOutcome\": \"Within the next 6 months, the local authority and community support providers should create and promote a clear, regularly updated referral pathway for emergency and ongoing food assistance. Low-income households, especially families with children, should be able to find reliable information and connect with suitable support quickly. Suggested target: establish a single accessible information point and confirm that participating providers can receive referrals.\",\n        \"id\": 22,\n        \"problem\": \"famine in the land due to flooding, no food\",\n        \"sdg\": {\n            \"goalNumber\": 2,\n            \"name\": \"Zero Hunger\",\n            \"id\": 2\n        },\n        \"sharingMethod\": \"\",\n        \"successMeasures\": \"1. Availability of a coordinated referral pathway: Measure whether a central, accessible directory or referral process exists, includes verified providers, and has a named maintainer. Collect evidence from the published resource, official correspondence, and provider confirmations. Review at launch and monthly thereafter. Suggested target: an agreed resource and maintenance responsibility within 6 months.\\n\\n2. Decision-maker engagement and commitments: Track responses, meetings held, named officials involved, and written commitments or action dates. Collect email records, meeting notes, and published decisions. Review after each advocacy action and at monthly campaign meetings. Suggested target: secure a formal meeting and a written implementation plan.\\n\\n3. Reach among trusted intermediaries and families: Measure how many schools, community groups, providers, and local networks share the verified information, plus visits, downloads, or messages requesting help. Use link analytics, partner reports, and a simple anonymous contact log. Establish a baseline before promotion, then review monthly. Suggested target: agree locally after the baseline is known.\\n\\n4. Successful connections to support: Measure whether people can contact an appropriate service after using the pathway and whether providers report receiving clearer referrals. Collect anonymous user feedback and monthly provider check-ins, without recording sensitive personal information. Review monthly and at 3 and 6 months. Suggested target: improve the proportion of users reporting that they found relevant help, compared with the baseline.\\n\\n5. Evidence of reduced access barriers: Ask families and frontline workers whether information is easier to find, understand, and use, including language and accessibility needs. Use short anonymous surveys or listening sessions. Establish a baseline before the campaign and review at 3 and 6 months. The longer-term desired change is fewer households left without help because they could not identify or reach available support.\",\n        \"title\": \"Make Local Food Support Easy to Find \",\n        \"updatedAt\": \"2026-09-13T01:43:13.116442\"\n    },\n    {\n        \"advocacyPlan\": \"Audiences\\nPrimary decision-makers are the local authority’s social services and community support leads, elected local representatives, and managers of food banks, community kitchens, schools, and family support services. Supporters include affected families, parent groups, schools, health and social-care workers, faith groups, volunteers, and local businesses. Families should be engaged safely and voluntarily, without requiring anyone to publicly disclose personal hardship.\\n\\nChannels\\nUse a simple campaign webpage or shared online information page as the central source for updates and requests. Use local Facebook groups, community messaging groups, email newsletters, and short-form social posts to reach residents and share practical information. Use email and scheduled meetings to approach decision-makers directly. Printed flyers in schools, libraries, clinics, housing offices, and community centres can reach people with limited internet access and direct them to phone, in-person, or online support. Suggested channels should be confirmed against local privacy, safeguarding, and accessibility requirements.\\n\\nActions and tactics\\n1. Map existing food-support services, opening times, eligibility rules, referral routes, languages, and accessibility information. Mark unknown or outdated details as items to verify rather than publishing assumptions.\\n2. Conduct a short, optional listening exercise with families and frontline workers to identify the main barriers to finding help. Use anonymous responses and avoid collecting unnecessary personal information.\\n3. Prepare a one-page proposal asking the local authority and providers to establish a verified, regularly updated food-support directory and a simple referral process. Include a named owner, update schedule, contact method, and options for people without internet access.\\n4. Ask families and supporters to sign a petition, send personalised emails, submit testimonials anonymously where appropriate, and attend a community meeting or local decision-making session.\\n5. Publish verified service information in accessible formats, including plain language, key local languages where feasible, large-print or printable versions, and phone or in-person alternatives.\\n6. Ask schools, clinics, housing teams, and community organisations to display the information and refer people to it. Ask providers to report broken links, changed hours, or gaps in coverage.\\n7. Share progress updates showing requests made, responses received, and practical improvements, while protecting families’ identities.\\n\\nApproach and sequence\\nStart by confirming the local area, existing services, preferred languages, and the authority responsible for social support. Establish a baseline of how residents currently find food assistance and how many services have verified information. Next, gather confidential experiences and map the support system. Use these findings to publish a concise proposal and secure initial meetings with decision-makers and service providers.\\n\\nBuild public support after the proposal is ready: share the problem and requested solution through local digital channels, invite endorsements from trusted community organisations, and collect petition signatures or messages. Deliver the evidence and community requests together through a meeting, formal letter, or public forum. Request specific commitments, such as appointing an information owner, agreeing an update schedule, and testing the referral pathway.\\n\\nDuring implementation, keep the directory updated, promote it through both digital and offline routes, and report obstacles quickly. At three months, ask decision-makers and providers to review progress. At six and twelve months, publish a short accountability update comparing access, information reliability, and referral experience with the baseline. If progress stalls, use follow-up meetings, public questions, partner endorsements, and local media outreach, where appropriate.\",\n        \"coreMessage\": \"Families in our neighbourhood are skipping meals because food costs are unaffordable, while existing support is difficult to find. Children and low-income households should not be left without reliable help. We are calling on local authorities and food-support providers to create and maintain one clear, accessible source of information, improve referrals, and make it easier for families to reach available food assistance.\",\n        \"createdAt\": \"2026-09-13T01:59:20.162416\",\n        \"decisionMaker\": \"Local authority officials responsible for social services, community support, and food assistance, together with leaders of local food banks and charitable support providers.\",\n        \"desiredOutcome\": \"Within 12 months, ensure that low-income families in the neighbourhood—especially households with children—can easily find and access reliable food assistance. The campaign will seek a clear, regularly updated local support pathway, with participating services agreeing to share accurate information and referral details. Proposed timeframe: begin implementation within 3 months and review progress at 6 and 12 months.\",\n        \"id\": 23,\n        \"problem\": \"Families in our neighbourhood are skipping meals because they cannot afford enough food. This affects low-income households, especially families with children. Existing support is difficult to find, leaving people without reliable help.\",\n        \"sdg\": {\n            \"goalNumber\": 1,\n            \"name\": \"No Poverty\",\n            \"id\": 1\n        },\n        \"sharingMethod\": \"\",\n        \"successMeasures\": \"1. Access to reliable information. Measure the number and proportion of mapped services with verified contact details, eligibility information, hours, and referral routes. Collect this through a service-mapping spreadsheet and monthly verification checks. Review monthly. Suggested target: an agreed high proportion of listed services verified by month 3; set the exact percentage after establishing the baseline.\\n\\n2. Decision-maker commitments. Measure whether the responsible authority and providers have appointed an information owner, agreed an update schedule, and adopted a clear referral process. Collect copies of written commitments, meeting notes, and policy or service changes. Review after each decision-making meeting and formally at months 3, 6, and 12. These are proposed review dates.\\n\\n3. Use of the support pathway. Measure directory visits, phone or in-person enquiries, referral requests, and completed referrals where providers can report them safely. Use privacy-respecting web analytics, anonymous enquiry logs, and monthly provider reports. Review monthly and compare with the baseline established before promotion. Suggested targets should be set after the first month of reliable data.\\n\\n4. Community mobilisation. Measure petition signatures, supporter messages, partner organisations sharing the request, meeting attendance, and responses from decision-makers. Collect platform analytics, sign-up records, email logs, and attendance counts. Review weekly during the public campaign and at each advocacy milestone. Interpret reach alongside actions taken, not as a substitute for improved access.\\n\\n5. Evidence of improved access for families. Measure anonymous feedback on whether people can find help, understand eligibility, and obtain food support more easily. Collect short voluntary surveys or feedback through trusted frontline organisations, with safeguards against identifying households. Review at months 6 and 12 against the initial baseline. Suggested outcome target: families report a clear, timely route to suitable assistance; define the threshold after baseline findings are available.\",\n        \"title\": \"Reliable Food Support for Every Family\",\n        \"updatedAt\": \"2026-09-13T01:59:20.162503\"\n    },\n    {\n        \"advocacyPlan\": \"Audiences\\nPrimary decision-makers are the local authority community support or welfare services lead and managers of relevant food assistance providers. Engage schools, family centres, health workers, housing organisations, faith groups, libraries, residents’ associations, and people with lived experience. Prioritise parents and carers who may need support, while protecting privacy and avoiding public disclosure of personal circumstances.\\n\\nChannels\\nUse a simple campaign webpage or shared information document as the central source of verified support information. Use local Facebook groups, WhatsApp community networks, email newsletters, school and family-service mailing lists, and short videos or graphics to reach residents through trusted intermediaries. Use posters, leaflets, libraries, schools, food providers, and community noticeboards for people with limited internet access. Use email and scheduled meetings to present the request directly to decision-makers.\\n\\nActions and tactics\\n1. Map existing food, benefits, and referral services with residents and frontline organisations. Record opening times, eligibility, contact methods, accessibility, languages, and update dates.\\n2. Ask the local authority to appoint a named coordinator, publish one accessible referral page or directory, and agree a process for checking information at least monthly.\\n3. Collect anonymised stories and short testimonies, with informed consent, showing how difficult it is to find help. Offer an anonymous route for people who do not want to be identified.\\n4. Create a petition or sign-on statement asking for a coordinated referral pathway, then ask residents and partner organisations to share it and send respectful messages to the responsible official.\\n5. Hold a small online or in-person listening session with families and providers. Publish agreed actions, unanswered questions, and the decision-maker’s response.\\n6. Share practical information alongside the advocacy ask, including where residents can seek current help while longer-term improvements are pursued.\\n\\nApproach\\nStart by confirming the service map and establishing a baseline: how many sources residents currently need to check, how often information is outdated, and whether families can identify a suitable service. Use this evidence to produce a concise briefing and a specific request for the local authority. Build a small coalition of trusted organisations before launching public communications. Run a two-week digital sign-on and story campaign, directing people to the decision-maker and the proposed referral solution rather than only describing the problem. Follow up with a meeting, public response deadline, and a revised implementation checklist. Continue monthly updates through partner channels. Combine online promotion with posters, printed guides, outreach at schools and food providers, and an offline feedback option. Escalate respectfully to a relevant committee or public meeting if no response is received, while keeping communications factual and safeguarding residents’ dignity.\",\n        \"coreMessage\": \"Families in our neighbourhood are skipping meals because food and household budgets do not stretch far enough. Support may exist, but people struggle to find reliable, current information about where to get help. The local authority and support providers should coordinate one simple referral pathway, keep it updated, and promote it through trusted community channels so families can access food assistance and related support without unnecessary barriers.\",\n        \"createdAt\": \"2026-09-13T02:17:37.2692\",\n        \"decisionMaker\": \"The local authority’s community support or welfare services lead, working with local food assistance providers and referral partners.\",\n        \"desiredOutcome\": \"Within 6 months, the local authority and community support providers should create and promote a clear, regularly updated referral pathway for emergency food assistance and related benefits. Low-income households, especially families with children, should be able to find suitable help quickly through accessible online and offline information.\",\n        \"id\": 24,\n        \"problem\": \"Families in our neighbourhood are skipping meals because they cannot afford enough food. This affects low-income households, especially families with children. Existing support is difficult to find, leaving people without reliable help.\",\n        \"sdg\": null,\n        \"sharingMethod\": \"\",\n        \"successMeasures\": \"1. Referral information availability: measure whether a single, accessible directory exists, includes key services, and is updated on schedule. Record the number of listed services, update dates, and missing details; establish a baseline first if unknown. Suggested review: monthly, with a target of an agreed update process within 3 months.\\n\\n2. Campaign participation and decision-maker response: measure sign-ons, messages sent, partner endorsements, event attendance, and whether the responsible official provides a written response or meeting. Collect platform analytics and a simple campaign log; review weekly during mobilisation and at the end of the first 6 months. Suggested target: participation from [number] residents and [number] partner organisations.\\n\\n3. Access to support: measure referrals, directory visits or information requests, and anonymised feedback on whether families reached suitable help more easily. Collect provider records, link analytics, and short optional surveys without collecting unnecessary personal data. Review monthly; suggested target and date: [target improvement] by [month/year].\",\n        \"title\": \"Make Local Food Support Easy to Find and Access\",\n        \"updatedAt\": \"2026-09-13T02:17:37.269224\"\n    }\n]"
+        }
+      ]
+    },
+    {
+      "name": "Create campaign",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"title\": \"Assessor test campaign\",\r\n  \"problem\": \"Residents need a safer pedestrian crossing.\",\r\n  \"desiredOutcome\": \"Get the council to assess the crossing.\",\r\n  \"coreMessage\": \"Everyone deserves safe streets.\",\r\n  \"sharingMethod\": \"Community meeting and email.\",\r\n  \"decisionMaker\": \"Local council transport team\",\r\n  \"advocacyPlan\": \"Collect residents' feedback and request a council meeting.\",\r\n  \"successMeasures\": \"Receive a council response and an assessment date.\",\r\n  \"sdgId\": null\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/campaigns",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "campaigns"
+          ]
+        },
+        "description": "Creates and saves a new advocacy campaign.  \nAlso creates the campaign's first version.\n\nMethod: POST  \nURL: [http://localhost:8080/api/campaigns](http://localhost:8080/api/campaigns)  \nAuthentication: None  \nPath parameters: None  \nQuery parameters: None  \nContent-Type: application/json\n\nRequest body: raw JSON\n\nRequired fields — all must contain nonblank text:\n\n- title: string, maximum 120 characters\n    \n- problem: string, maximum 5,000 characters\n    \n- desiredOutcome: string, maximum 5,000 characters\n    \n- coreMessage: string, maximum 5,000 characters\n    \n- decisionMaker: string, maximum 255 characters\n    \n- advocacyPlan: string, maximum 10,000 characters\n    \n- successMeasures: string, maximum 5,000 characters\n    \n\nOptional fields:\n\n- sharingMethod: string, maximum 5,000 characters.  \n    If omitted or null, an empty string is saved.\n    \n- sdgId: positive integer identifying an existing SDG,  \n    or null when no SDG is selected.\n    \n\nSuccess response: 201 Created  \nResponse format: application/json\n\nReturns the saved campaign containing:\n\n- id: generated integer identifier\n    \n- All eight campaign text fields\n    \n- sdg: an object containing id, goalNumber and name,  \n    or null\n    \n- createdAt and updatedAt: date-time strings\n    \n\nError response: 400 Bad Request  \nReturned when request validation fails or the supplied  \nsdgId does not identify an existing SDG.\n\nSee the saved example for a valid request and its  \n201 Created response."
+      },
+      "response": [
+        {
+          "name": "201 — Campaign created",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Assessor test campaign\",\r\n  \"problem\": \"Residents need a safer pedestrian crossing.\",\r\n  \"desiredOutcome\": \"Get the council to assess the crossing.\",\r\n  \"coreMessage\": \"Everyone deserves safe streets.\",\r\n  \"sharingMethod\": \"Community meeting and email.\",\r\n  \"decisionMaker\": \"Local council transport team\",\r\n  \"advocacyPlan\": \"Collect residents' feedback and request a council meeting.\",\r\n  \"successMeasures\": \"Receive a council response and an assessment date.\",\r\n  \"sdgId\": null\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/campaigns",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "campaigns"
+              ]
+            }
+          },
+          "status": "Created",
+          "code": 201,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Date",
+              "value": "Sun, 13 Sep 2026 16:07:11 GMT"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"advocacyPlan\": \"Collect residents' feedback and request a council meeting.\",\n    \"coreMessage\": \"Everyone deserves safe streets.\",\n    \"createdAt\": \"2026-09-13T16:07:11.820798488\",\n    \"decisionMaker\": \"Local council transport team\",\n    \"desiredOutcome\": \"Get the council to assess the crossing.\",\n    \"id\": 26,\n    \"problem\": \"Residents need a safer pedestrian crossing.\",\n    \"sdg\": null,\n    \"sharingMethod\": \"Community meeting and email.\",\n    \"successMeasures\": \"Receive a council response and an assessment date.\",\n    \"title\": \"Assessor test campaign\",\n    \"updatedAt\": \"2026-09-13T16:07:11.820883646\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Get campaign by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/campaigns/26",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "campaigns",
+            "26"
+          ]
+        },
+        "description": "Retrieves one saved campaign using its unique ID.\n\nMethod: GET  \nURL: [http://localhost:8080/api/campaigns/{id}](http://localhost:8080/api/campaigns/{id})  \nExample: [http://localhost:8080/api/campaigns/26](http://localhost:8080/api/campaigns/26)\n\nAuthentication: None\n\nPath parameter:\n\n- id: required integer identifying the campaign.\n    \n\nQuery parameters: None  \nRequest body: None\n\nSuccess response: 200 OK  \nContent type: application/json\n\nReturns one campaign object containing:\n\n- id: integer\n    \n- title, problem, desiredOutcome, coreMessage,  \n    sharingMethod, decisionMaker, advocacyPlan and  \n    successMeasures: strings\n    \n- sdg: an object containing id and goalNumber  \n    (integers) and name (string), or null\n    \n- createdAt and updatedAt: date-time strings\n    \n\nError responses:\n\n- 404 Not Found: no campaign exists with that ID.  \n    The response body is empty.\n    \n- 400 Bad Request: the ID cannot be interpreted  \n    as a valid integer ID.\n    \n\nSee the saved example for a successful response."
+      },
+      "response": [
+        {
+          "name": "campaign by ID retrieved - 26",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/campaigns/26",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "campaigns",
+                "26"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Date",
+              "value": "Sun, 13 Sep 2026 16:11:59 GMT"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"advocacyPlan\": \"Collect residents' feedback and request a council meeting.\",\n    \"coreMessage\": \"Everyone deserves safe streets.\",\n    \"createdAt\": \"2026-09-13T16:07:11.820798\",\n    \"decisionMaker\": \"Local council transport team\",\n    \"desiredOutcome\": \"Get the council to assess the crossing.\",\n    \"id\": 26,\n    \"problem\": \"Residents need a safer pedestrian crossing.\",\n    \"sdg\": null,\n    \"sharingMethod\": \"Community meeting and email.\",\n    \"successMeasures\": \"Receive a council response and an assessment date.\",\n    \"title\": \"Assessor test campaign\",\n    \"updatedAt\": \"2026-09-13T16:07:11.820884\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Update campaign",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"title\": \"Assessor test campaign - updated\",\r\n  \"problem\": \"Residents need a safer pedestrian crossing.\",\r\n  \"desiredOutcome\": \"Get the council to assess the crossing.\",\r\n  \"coreMessage\": \"Everyone deserves safe streets.\",\r\n  \"sharingMethod\": \"Community meeting and email.\",\r\n  \"decisionMaker\": \"Local council transport team\",\r\n  \"advocacyPlan\": \"Collect residents' feedback and request a council meeting.\",\r\n  \"successMeasures\": \"Receive a council response and an assessment date.\",\r\n  \"sdgId\": null\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/campaigns/26",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "campaigns",
+            "26"
+          ]
+        },
+        "description": "Updates an existing campaign and saves a new version  \nin its history.\n\nMethod: PUT  \nURL: [http://localhost:8080/api/campaigns/{id}](http://localhost:8080/api/campaigns/{id})  \nExample: [http://localhost:8080/api/campaigns/26](http://localhost:8080/api/campaigns/26)\n\nAuthentication: None  \nContent-Type: application/json\n\nPath parameter:\n\n- id: required integer identifying the campaign.\n    \n\nQuery parameters: None  \nRequest body: raw JSON\n\nAll required fields must be supplied, even when  \nchanging only one field.\n\nRequired fields — all must contain nonblank text:\n\n- title: string, maximum 120 characters\n    \n- problem: string, maximum 5,000 characters\n    \n- desiredOutcome: string, maximum 5,000 characters\n    \n- coreMessage: string, maximum 5,000 characters\n    \n- decisionMaker: string, maximum 255 characters\n    \n- advocacyPlan: string, maximum 10,000 characters\n    \n- successMeasures: string, maximum 5,000 characters\n    \n\nOptional fields:\n\n- sharingMethod: string, maximum 5,000 characters.  \n    Omitting it or sending null preserves its current value.  \n    Sending an empty string clears it.\n    \n- sdgId: positive integer identifying an existing SDG.  \n    Omitting it or sending null removes the SDG association.\n    \n\nSuccess response: 200 OK  \nContent type: application/json\n\nReturns the updated campaign containing:\n\n- id: integer; the campaign keeps its existing ID\n    \n- All eight campaign text fields\n    \n- sdg: an object containing id and goalNumber  \n    (integers) and name (string), or null\n    \n- createdAt and updatedAt: date-time strings\n    \n\nError responses:\n\n- 400 Bad Request: invalid request fields,  \n    an unknown sdgId, or an invalid path ID.\n    \n- 404 Not Found: the campaign does not exist.  \n    The response body is empty.\n    \n\nSee the saved example for a successful update."
+      },
+      "response": [
+        {
+          "name": "200 — Campaign updated",
+          "originalRequest": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Assessor test campaign - updated\",\r\n  \"problem\": \"Residents need a safer pedestrian crossing.\",\r\n  \"desiredOutcome\": \"Get the council to assess the crossing.\",\r\n  \"coreMessage\": \"Everyone deserves safe streets.\",\r\n  \"sharingMethod\": \"Community meeting and email.\",\r\n  \"decisionMaker\": \"Local council transport team\",\r\n  \"advocacyPlan\": \"Collect residents' feedback and request a council meeting.\",\r\n  \"successMeasures\": \"Receive a council response and an assessment date.\",\r\n  \"sdgId\": null\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/campaigns/26",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "campaigns",
+                "26"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Date",
+              "value": "Sun, 13 Sep 2026 16:22:34 GMT"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"advocacyPlan\": \"Collect residents' feedback and request a council meeting.\",\n    \"coreMessage\": \"Everyone deserves safe streets.\",\n    \"createdAt\": \"2026-09-13T16:07:11.820798\",\n    \"decisionMaker\": \"Local council transport team\",\n    \"desiredOutcome\": \"Get the council to assess the crossing.\",\n    \"id\": 26,\n    \"problem\": \"Residents need a safer pedestrian crossing.\",\n    \"sdg\": null,\n    \"sharingMethod\": \"Community meeting and email.\",\n    \"successMeasures\": \"Receive a council response and an assessment date.\",\n    \"title\": \"Assessor test campaign - updated\",\n    \"updatedAt\": \"2026-09-13T16:22:33.827902376\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Get campaign versions",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/campaigns/26/versions",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "campaigns",
+            "26",
+            "versions"
+          ]
+        },
+        "description": "Retrieves one saved version of a campaign.  \nThe response contains the campaign details captured  \nwhen that version was saved.\n\nMethod: GET  \nURL: [http://localhost:8080/api/campaigns/{id}/versions/{versionId}](http://localhost:8080/api/campaigns/{id}/versions/{versionId})  \nExample: [http://localhost:8080/api/campaigns/26/versions/9](http://localhost:8080/api/campaigns/26/versions/9)\n\nAuthentication: None\n\nPath parameters:\n\n- id: required integer identifying the campaign.\n    \n- versionId: required integer identifying the saved  \n    version record. Use the id returned by the  \n    Get campaign versions endpoint.\n    \n\nQuery parameters: None  \nRequest body: None\n\nSuccess response: 200 OK  \nContent type: application/json\n\nReturns one version object containing:\n\n- id: integer identifying the version record\n    \n- campaignId: integer identifying its campaign\n    \n- versionNumber: integer indicating its version number\n    \n- savedAt: date-time string\n    \n- title, problem, desiredOutcome, coreMessage,  \n    sharingMethod, decisionMaker, advocacyPlan and  \n    successMeasures: strings\n    \n- sdgId and sdgGoalNumber: integers or null\n    \n- sdgName: string or null\n    \n\nError responses:\n\n- 404 Not Found: no version matches both the  \n    campaign ID and version record ID.  \n    The response body is empty.\n    \n- 400 Bad Request: either path ID is not a valid  \n    integer ID.\n    \n\nSee the saved example for a successful response."
+      },
+      "response": [
+        {
+          "name": "200 — Campaign version retrieved",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/campaigns/26/versions",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "campaigns",
+                "26",
+                "versions"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Date",
+              "value": "Sun, 13 Sep 2026 16:34:38 GMT"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "[\n    {\n        \"versionNumber\": 2,\n        \"advocacyPlan\": \"Collect residents' feedback and request a council meeting.\",\n        \"campaignId\": 26,\n        \"coreMessage\": \"Everyone deserves safe streets.\",\n        \"decisionMaker\": \"Local council transport team\",\n        \"desiredOutcome\": \"Get the council to assess the crossing.\",\n        \"id\": 9,\n        \"problem\": \"Residents need a safer pedestrian crossing.\",\n        \"savedAt\": \"2026-09-13T16:22:33.974509Z\",\n        \"sdgGoalNumber\": null,\n        \"sdgId\": null,\n        \"sdgName\": null,\n        \"sharingMethod\": \"Community meeting and email.\",\n        \"successMeasures\": \"Receive a council response and an assessment date.\",\n        \"title\": \"Assessor test campaign - updated\"\n    },\n    {\n        \"versionNumber\": 1,\n        \"advocacyPlan\": \"Collect residents' feedback and request a council meeting.\",\n        \"campaignId\": 26,\n        \"coreMessage\": \"Everyone deserves safe streets.\",\n        \"decisionMaker\": \"Local council transport team\",\n        \"desiredOutcome\": \"Get the council to assess the crossing.\",\n        \"id\": 8,\n        \"problem\": \"Residents need a safer pedestrian crossing.\",\n        \"savedAt\": \"2026-09-13T16:07:11.854518Z\",\n        \"sdgGoalNumber\": null,\n        \"sdgId\": null,\n        \"sdgName\": null,\n        \"sharingMethod\": \"Community meeting and email.\",\n        \"successMeasures\": \"Receive a council response and an assessment date.\",\n        \"title\": \"Assessor test campaign\"\n    }\n]"
+        }
+      ]
+    },
+    {
+      "name": "Download campaign PDF",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/pdf",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/campaigns/26/pdf",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "campaigns",
+            "26",
+            "pdf"
+          ]
+        },
+        "description": "Generates a PDF document containing the current  \ndetails of a saved campaign.\n\nMethod: GET  \nURL: [http://localhost:8080/api/campaigns/{id}/pdf](http://localhost:8080/api/campaigns/{id}/pdf)  \nExample: [http://localhost:8080/api/campaigns/26/pdf](http://localhost:8080/api/campaigns/26/pdf)\n\nAuthentication: None\n\nPath parameter:\n\n- id: required integer identifying the campaign.\n    \n\nQuery parameters: None  \nRequest body: None\n\nRequest header:  \nAccept: application/pdf\n\nSuccess response: 200 OK  \nResponse body: PDF document\n\nResponse headers:\n\n- Content-Type: application/pdf\n    \n- Content-Disposition:  \n    attachment; filename=\"campaign-{id}.pdf\"\n    \n\nFor campaign 26, the filename is campaign-26.pdf.\n\nThe PDF contains the campaign's current details,  \nincluding its title, problem, desired outcome  \nand advocacy plan.\n\nError response:\n\n- 404 Not Found: the campaign does not exist.  \n    The response body is empty."
+      },
+      "response": []
+    },
+    {
+      "name": "Get campaign version by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/campaigns/26/versions/9",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "campaigns",
+            "26",
+            "versions",
+            "9"
+          ]
+        },
+        "description": "Retrieves one saved snapshot of a campaign.\n\nMethod: GET  \nURL: [http://localhost:8080/api/campaigns/{id}/versions/{versionId}](http://localhost:8080/api/campaigns/{id}/versions/{versionId})  \nExample: [http://localhost:8080/api/campaigns/26/versions/9](http://localhost:8080/api/campaigns/26/versions/9)\n\nAuthentication: None\n\nRequired path parameters:\n\n- id: integer identifying the campaign.\n    \n- versionId: integer identifying the version record.  \n    This is the version's database ID, not its versionNumber.\n    \n\nQuery parameters: None  \nRequest body: None\n\nSuccess response: 200 OK  \nContent type: application/json\n\nReturns one version object containing:\n\n- id, campaignId and versionNumber: integers\n    \n- savedAt: date-time string\n    \n- title, problem, desiredOutcome, coreMessage,  \n    sharingMethod, decisionMaker, advocacyPlan and  \n    successMeasures: strings\n    \n- sdgId and sdgGoalNumber: integers or null\n    \n- sdgName: string or null\n    \n\nError responses:\n\n- 404 Not Found: no version matches both supplied IDs.  \n    The response body is empty.\n    \n- 400 Bad Request: either path ID is not a valid  \n    integer ID.\n    \n\nSee the saved example for a successful response."
+      },
+      "response": [
+        {
+          "name": "200 — Single campaign version retrieved",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/campaigns/26/versions/9",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "campaigns",
+                "26",
+                "versions",
+                "9"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Date",
+              "value": "Sun, 13 Sep 2026 16:46:29 GMT"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"versionNumber\": 2,\n    \"advocacyPlan\": \"Collect residents' feedback and request a council meeting.\",\n    \"campaignId\": 26,\n    \"coreMessage\": \"Everyone deserves safe streets.\",\n    \"decisionMaker\": \"Local council transport team\",\n    \"desiredOutcome\": \"Get the council to assess the crossing.\",\n    \"id\": 9,\n    \"problem\": \"Residents need a safer pedestrian crossing.\",\n    \"savedAt\": \"2026-09-13T16:22:33.974509Z\",\n    \"sdgGoalNumber\": null,\n    \"sdgId\": null,\n    \"sdgName\": null,\n    \"sharingMethod\": \"Community meeting and email.\",\n    \"successMeasures\": \"Receive a council response and an assessment date.\",\n    \"title\": \"Assessor test campaign - updated\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Download campaign version PDF",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/campaigns/26/versions/9/pdf",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "campaigns",
+            "26",
+            "versions",
+            "9",
+            "pdf"
+          ]
+        },
+        "description": "Generates a PDF of one saved campaign version.  \nThe document contains the details captured when  \nthat version was saved.\n\nMethod: GET  \nURL: [http://localhost:8080/api/campaigns/{id}/versions/{versionId}/pdf](http://localhost:8080/api/campaigns/{id}/versions/{versionId}/pdf)  \nExample: [http://localhost:8080/api/campaigns/26/versions/9/pdf](http://localhost:8080/api/campaigns/26/versions/9/pdf)\n\nAuthentication: None\n\nRequired path parameters:\n\n- id: integer identifying the campaign.\n    \n- versionId: integer identifying the version record.  \n    Use the id returned by Get campaign versions.\n    \n\nQuery parameters: None  \nRequest body: None\n\nRequest header:  \nAccept: application/pdf\n\nSuccess response: 200 OK  \nResponse body: PDF document\n\nResponse headers:\n\n- Content-Type: application/pdf\n    \n- Content-Disposition:  \n    attachment; filename=\"campaign-{id}-version-{versionNumber}.pdf\"\n    \n\nExample filename: campaign-26-version-2.pdf\n\nError response:\n\n- 404 Not Found: no saved version matches both  \n    the campaign ID and version record ID.  \n    The response body is empty."
+      },
+      "response": []
+    },
+    {
+      "name": "Get SDG by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/sdgs/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "sdgs",
+            "1"
+          ]
+        },
+        "description": "Retrieves one Sustainable Development Goal (SDG)  \nusing its database ID.\n\nMethod: GET  \nURL: [http://localhost:8080/api/sdgs/{id}](http://localhost:8080/api/sdgs/{id})  \nExample: [http://localhost:8080/api/sdgs/1](http://localhost:8080/api/sdgs/1)\n\nAuthentication: None\n\nPath parameter:\n\n- id: required integer identifying the SDG.  \n    Use an id returned by Get all SDGs.\n    \n\nQuery parameters: None  \nRequest body: None\n\nSuccess response: 200 OK  \nContent type: application/json\n\nReturns one SDG object containing:\n\n- id: integer identifying the database record\n    \n- goalNumber: integer identifying the SDG goal number\n    \n- name: string containing the goal's name\n    \n\nError responses:\n\n- 404 Not Found: the SDG does not exist.  \n    The response body is empty.\n    \n- 400 Bad Request: the path ID is not a valid  \n    integer ID.\n    \n\nSee the saved example for a successful response."
+      },
+      "response": [
+        {
+          "name": "200 — SDG retrieved",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/sdgs/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "sdgs",
+                "1"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Date",
+              "value": "Sun, 13 Sep 2026 16:57:56 GMT"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"goalNumber\": 1,\n    \"name\": \"No Poverty\",\n    \"id\": 1\n}"
+        }
+      ]
+    },
+    {
+      "name": "Generate AI campaign draft",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"problem\": \"Residents need a safer pedestrian crossing near the community centre.\",\r\n  \"sdgId\": null\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/ai/draft",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "ai",
+            "draft"
+          ]
+        },
+        "description": "Generates suggested campaign text from a problem  \ndescription and an optional Sustainable Development Goal.\n\nThis endpoint generates text without saving a campaign.  \nUse POST /api/campaigns to save a completed campaign.\n\nMethod: POST  \nURL: [http://localhost:8080/api/ai/draft](http://localhost:8080/api/ai/draft)\n\nAuthentication: None for this application endpoint.  \nThe backend requires its AI provider configuration.\n\nPath parameters: None  \nQuery parameters: None  \nContent-Type: application/json\n\nRequest body: raw JSON\n\nFields:\n\n- problem: required nonblank string,  \n    maximum 5,000 characters.\n    \n- sdgId: optional positive integer identifying  \n    an existing SDG, or null.\n    \n\nSuccess response: 200 OK  \nContent type: application/json\n\nReturns six string fields:\n\n- title: maximum 120 characters\n    \n- desiredOutcome: maximum 5,000 characters\n    \n- coreMessage: maximum 5,000 characters\n    \n- decisionMaker: maximum 255 characters\n    \n- advocacyPlan: maximum 10,000 characters\n    \n- successMeasures: maximum 5,000 characters\n    \n\nGenerated wording can vary between requests.\n\nError responses:\n\n- 400 Bad Request: invalid request fields or  \n    an unknown selected SDG.\n    \n- 503 Service Unavailable: missing AI configuration  \n    or a handled AI generation failure.\n    \n\nError responses include a message.  \nField validation errors also include an errors object  \nmapping field names to validation messages."
+      },
+      "response": [
+        {
+          "name": "200 — AI draft generated",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"problem\": \"Residents need a safer pedestrian crossing near the community centre.\",\r\n  \"sdgId\": null\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/ai/draft",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "ai",
+                "draft"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Length",
+              "value": "4702"
+            },
+            {
+              "key": "Date",
+              "value": "Sun, 13 Sep 2026 17:06:40 GMT"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"title\": \"Safer Pedestrian Crossing Near the Community Centre\",\n    \"desiredOutcome\": \"Within the next 6–12 months, the responsible local authority should assess and implement a safer pedestrian crossing near the community centre, such as improved markings, signage, lighting, traffic calming, or a formal crossing point. The change should benefit residents, children, older people, people with disabilities, centre users, and other pedestrians.\",\n    \"coreMessage\": \"People using the community centre need a safer way to cross the nearby road. Current conditions may make crossing difficult or unsafe, especially for children, older people, and people with mobility needs. We are asking the responsible local authority to investigate the location with residents and deliver practical safety improvements within 6–12 months.\",\n    \"decisionMaker\": \"The local council or transport/highways authority responsible for road safety and pedestrian infrastructure near the community centre.\",\n    \"advocacyPlan\": \"Audiences\\nPrimary decision-makers are the local councillor, transport or highways officers, and any road-safety committee with authority over the site. Engage community-centre users, nearby residents, parents and carers, older people, disability groups, local schools, businesses, and road-safety advocates. Ask the community-centre management to help coordinate evidence and outreach.\\n\\nChannels\\nUse a simple campaign page or shared information document to hold the request, location details, photos, updates, and contact information. Use local Facebook groups, WhatsApp or SMS networks, email lists, and community-centre noticeboards to reach residents. Use short videos or photographs only where privacy and road safety allow. Submit a formal council petition, service request, or public consultation response so the campaign is recorded through an official channel.\\n\\nActions and tactics\\n1. Establish a baseline: map the crossing point, record relevant times and conditions, and collect anonymised resident accounts about difficulty or near misses. Do not ask people to photograph identifiable children or unsafe behaviour.\\n2. Create a one-page request with the exact location, proposed improvements, accessibility concerns, and a request for a site assessment and written response.\\n3. Invite supporters to sign the petition, submit individual messages, and share a common request with the local councillor and highways authority.\\n4. Ask the community centre to host a short listening session or walk-through, including people with disabilities and older residents.\\n5. Publish progress updates, responses, and next steps. If no response arrives, request a meeting and ask for the issue to be placed on the relevant committee or council agenda.\\n\\nApproach\\nFirst gather credible local evidence and agree the minimum acceptable outcome with affected residents. Then launch the petition and coordinated messages over a defined period, directing every supporter to the same decision-maker and specific request. Present the evidence at a meeting or site visit and request a written timetable, not only general support. Use offline conversations, a community-centre event, and printed sign-up sheets to include people who are not online; add their consented contributions to the digital submission. After the authority responds, publicly acknowledge commitments, track milestones, and continue targeted follow-up until an assessment and improvement are completed. If the authority proposes an alternative, consult affected residents before accepting it.\",\n    \"successMeasures\": \"1. Support and participation: Measure petition signatures, individual submissions, event attendance, and representation from affected groups. Collect figures through the petition platform, sign-in sheets, and a simple supporter log; review weekly during the campaign. Suggested target: agree a realistic local target after establishing a baseline.\\n\\n2. Decision-maker response: Measure whether the responsible authority acknowledges the request, conducts a site assessment, holds a meeting, and provides a written timetable. Save emails, meeting notes, and published records; review at launch, after 30 days, and at each promised milestone. Suggested target: obtain a written response and assessment within 60 days.\\n\\n3. Physical change and perceived safety: Measure whether agreed improvements are installed and whether pedestrians report improved safety and accessibility. Use dated photographs or official confirmation, plus a short before-and-after survey; review at installation and three months afterward. Suggested target: complete the agreed improvement within 6–12 months and compare results with the initial baseline.\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Review campaign with AI",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"title\": \"Assessor test campaign - updated\",\r\n  \"problem\": \"Residents need a safer pedestrian crossing.\",\r\n  \"desiredOutcome\": \"Get the council to assess the crossing.\",\r\n  \"coreMessage\": \"Everyone deserves safe streets.\",\r\n  \"sharingMethod\": \"Community meeting and email.\",\r\n  \"decisionMaker\": \"Local council transport team\",\r\n  \"advocacyPlan\": \"Collect residents' feedback and request a council meeting.\",\r\n  \"successMeasures\": \"Receive a council response and an assessment date.\",\r\n  \"sdgId\": null\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/ai/review",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "ai",
+            "review"
+          ]
+        },
+        "description": "Reviews the supplied campaign details and returns  \nAI-generated feedback.\n\nThis endpoint does not save or update a campaign.\n\nMethod: POST  \nURL: [http://localhost:8080/api/ai/review](http://localhost:8080/api/ai/review)\n\nAuthentication: None for this application endpoint.  \nThe backend requires its AI provider configuration.\n\nPath parameters: None  \nQuery parameters: None  \nContent-Type: application/json  \nRequest body: raw JSON\n\nRequired fields — all must contain nonblank text:\n\n- title: string, maximum 120 characters\n    \n- problem: string, maximum 5,000 characters\n    \n- desiredOutcome: string, maximum 5,000 characters\n    \n- coreMessage: string, maximum 5,000 characters\n    \n- decisionMaker: string, maximum 255 characters\n    \n- advocacyPlan: string, maximum 10,000 characters\n    \n- successMeasures: string, maximum 5,000 characters\n    \n\nOptional fields:\n\n- sharingMethod: string or null,  \n    maximum 5,000 characters.\n    \n- sdgId: positive integer or null.  \n    The current review prompt does not use this field.\n    \n\nSuccess response: 200 OK  \nContent type: application/json\n\nReturns an object containing:\n\n- review: string containing the AI-generated feedback.\n    \n\nFeedback can vary between requests.\n\nError responses:\n\n- 400 Bad Request: request validation failed.\n    \n- 503 Service Unavailable: missing AI configuration  \n    or a handled AI service failure.\n    \n\nError responses include a message.  \nField validation errors also include an errors object  \nmapping field names to validation messages."
+      },
+      "response": [
+        {
+          "name": "200 -  AI Campaign Review",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Assessor test campaign - updated\",\r\n  \"problem\": \"Residents need a safer pedestrian crossing.\",\r\n  \"desiredOutcome\": \"Get the council to assess the crossing.\",\r\n  \"coreMessage\": \"Everyone deserves safe streets.\",\r\n  \"sharingMethod\": \"Community meeting and email.\",\r\n  \"decisionMaker\": \"Local council transport team\",\r\n  \"advocacyPlan\": \"Collect residents' feedback and request a council meeting.\",\r\n  \"successMeasures\": \"Receive a council response and an assessment date.\",\r\n  \"sdgId\": null\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/ai/review",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "ai",
+                "review"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Length",
+              "value": "4844"
+            },
+            {
+              "key": "Date",
+              "value": "Sun, 13 Sep 2026 17:10:28 GMT"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"review\": \"## 1. What is working\\n\\n- **The problem is focused on pedestrian safety.** This gives the campaign a clear public-interest purpose.\\n- **The desired outcome is reasonably specific.** Asking the council to assess the crossing is more realistic and measurable than asking generally for “safer streets.”\\n- **The decision maker is relevant.** The council transport team is likely connected to pedestrian crossings, although the exact person or office is not named.\\n- **The success measures are observable.** A written council response and an assessment date can be checked directly.\\n\\n## 2. What could be clearer\\n\\n- **Problem:** “A safer pedestrian crossing” does not explain what makes the crossing unsafe. The campaign would be more persuasive if it identified the concern, such as poor visibility, fast traffic, missing signals, or difficulty crossing.\\n- **Desired outcome:** “Get the council to assess the crossing” is clear, but “assess” could mean different things. It would help to specify whether the request is for a formal safety assessment and whether the council should report its findings.\\n- **Core message:** “Everyone deserves safe streets” is memorable but broad. It does not tell people which crossing needs attention or what action the council should take.\\n- **Sharing method:** A community meeting and email are useful starting points, but the plan does not say who will send the email, how residents’ feedback will be collected, or how the meeting will lead to action.\\n- **Decision maker:** “Local council transport team” identifies the relevant department but not the person with authority to accept the request or arrange the assessment. This may need to be confirmed.\\n- **Advocacy plan:** The plan is incomplete because it does not include preparing evidence, assigning responsibilities, setting a follow-up date, or deciding what to do if the council does not respond.\\n- **Success measures:** A council response is useful, but a response alone may not show meaningful progress. The campaign should distinguish between receiving an acknowledgment and securing a confirmed assessment date.\\n\\n## 3. Polished campaign\\n\\n### Problem\\n\\nResidents are concerned that the pedestrian crossing at **[location]** is not safe or accessible enough for people crossing the road. The campaign should document the specific concerns, such as **[visibility, traffic speed, crossing time, lighting, or another observed issue]**.\\n\\n### Desired outcome\\n\\nSecure a formal council safety assessment of the pedestrian crossing at **[location]**, with the council confirming the assessment date and sharing its findings with residents.\\n\\n### Core message\\n\\n**Residents are asking the council to assess the pedestrian crossing at [location] so people can cross safely.**\\n\\n### Sharing method\\n\\nHold a community meeting to collect residents’ experiences and examples, then send a joint email or letter to the council transport team requesting the assessment. Share the council’s response with participating residents.\\n\\n### Decision maker\\n\\nThe council officer, transport manager, or elected representative responsible for pedestrian crossing safety and assessment requests.\\n\\n### Advocacy plan\\n\\n1. Confirm the crossing’s exact location and record the main safety concerns.\\n2. Collect residents’ feedback, including specific examples of when and how people experience risk.\\n3. Hold a community meeting to agree on the request and identify residents who will lead follow-up.\\n4. Send a joint written request to the responsible council officer or representative.\\n5. Ask the council to confirm whether it will conduct a formal assessment, who will lead it, and the proposed date.\\n6. Follow up if there is no response and share the outcome with residents.\\n\\n### Success measures\\n\\n- Residents’ feedback is collected and summarised.\\n- A joint request is sent to the responsible council contact.\\n- The council confirms receipt of the request.\\n- The council provides a confirmed date for the crossing assessment.\\n- The council shares the assessment findings or explains the next steps.\\n\\n## 4. What the user can learn\\n\\n- **Adding the location and observed safety concerns** separates the problem from a general concern and gives the council something specific to investigate.\\n- **Defining what “assess” means** turns a broad request into a concrete outcome.\\n- **Rewriting the core message** makes the campaign easier to remember because it connects the value—safe crossing—with the requested action.\\n- **Naming the responsible officer or representative** identifies who has decision-making power and who should receive the request.\\n- **Adding evidence collection and follow-up** makes the advocacy plan actionable rather than stopping at a general meeting.\\n-\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Delete campaign",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/campaigns/26",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "campaigns",
+            "26"
+          ]
+        },
+        "description": "Deletes an existing campaign and all its saved versions.\n\nMethod: DELETE  \nURL: [http://localhost:8080/api/campaigns/{id}](http://localhost:8080/api/campaigns/{id})  \nExample: [http://localhost:8080/api/campaigns/26](http://localhost:8080/api/campaigns/26)\n\nAuthentication: None\n\nPath parameter:\n\n- id: required integer identifying the campaign.\n    \n\nQuery parameters: None  \nRequest body: None\n\nSuccess response: 204 No Content  \nResponse body: Empty.\n\nError responses:\n\n- 404 Not Found: the campaign does not exist.  \n    The response body is empty.\n    \n- 400 Bad Request: the path ID is not a valid  \n    integer ID.\n    \n\nTesting instructions:  \nCreate a test campaign first using POST /api/campaigns.  \nUse its returned ID when testing this endpoint.\n\nDeleting the campaign also removes its version history."
+      },
+      "response": [
+        {
+          "name": "204 Campaign Deleted",
+          "originalRequest": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/campaigns/26",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "campaigns",
+                "26"
+              ]
+            }
+          },
+          "status": "No Content",
+          "code": 204,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "Date",
+              "value": "Sun, 13 Sep 2026 17:18:59 GMT"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": null
+        }
+      ]
+    }
+  ]
+}
