@@ -26,6 +26,7 @@ type AppView =
   | 'builder'
   | 'history'
   | 'details'
+  | 'edit'
 
 export default function App() {
   const { theme, setTheme } = useTheme()
@@ -115,18 +116,13 @@ export default function App() {
     setSelectedCampaign(campaign)
     setView('details')
   }
-if (view === 'welcome') {
   return (
-    <WelcomePage
-      theme={theme}
-      onThemeChange={setTheme}
-      onStart={showBuilder}
-      onViewCampaigns={showHistory}
-    />
-  )
-}
-  return (
-    <div className="app">
+    <>
+      {view === 'welcome' && (
+        <WelcomePage theme={theme} onThemeChange={setTheme}
+          onStart={showBuilder} onViewCampaigns={showHistory} />
+      )}
+      <div className="app" hidden={view === 'welcome'}>
       <header className="app-header">
         <div className="header-content">
 
@@ -192,22 +188,20 @@ if (view === 'welcome') {
             <p>{loadingError}</p>
 
             <p>
-              Make sure MySQL and Spring Boot are
-              running, then refresh the page.
+              Please try refreshing the page. Your campaign studio is temporarily unavailable.
             </p>
           </div>
         )}
 
-        {!isLoading &&
-          !loadingError &&
-          view === 'builder' && (
-            <CampaignForm
-              onCampaignCreated={
-                handleCampaignCreated
-              }
-              sdgs={sdgs}
-            />
-          )}
+        {!isLoading && !loadingError && (
+          <div className="builder-view" hidden={view !== 'builder'}>
+           <CampaignForm
+  sdgs={sdgs}
+  onCampaignSaved={handleCampaignCreated}
+  onBackToWelcome={() => setView('welcome')}
+/>
+          </div>
+        )}
 
         {!isLoading &&
           !loadingError &&
@@ -230,6 +224,7 @@ if (view === 'welcome') {
             />
           )}
       </main>
-    </div>
+      </div>
+    </>
   )
 }

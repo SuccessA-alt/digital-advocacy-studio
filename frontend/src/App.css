@@ -177,32 +177,27 @@
   font-weight: 500;
 }
 
-.campaign-builder input {
+.campaign-builder input,
+.campaign-builder textarea {
+  box-sizing: border-box;
   width: 100%;
   min-width: 0;
   border: 1px solid var(--control-border);
   border-radius: 16px;
-  outline: none;
   color: var(--text);
   background: var(--surface);
-  transition: border-color 150ms ease, box-shadow 150ms ease;
+  font: inherit;
+  line-height: 1.55;
+}
+
+.campaign-builder input {
   min-height: 48px;
   padding: 10px 13px;
-  border-color: var(--control-border);
 }
 
 .campaign-builder textarea {
-  width: 100%;
-  min-width: 0;
-  border: 1px solid var(--control-border);
-  border-radius: 16px;
-  outline: none;
-  color: var(--text);
-  background: var(--surface);
-  transition: border-color 150ms ease, box-shadow 150ms ease;
-  padding: 20px;
-  line-height: 1.55;
-  border-color: var(--control-border);
+  padding: 16px;
+  resize: vertical;
 }
 
 .campaign-builder input:focus,
@@ -279,7 +274,6 @@
   color: var(--on-accent);
   background: var(--accent-fill);
   font-weight: 750;
-  border-color: var(--control-border);
 }
 
 .campaign-details-actions button {
@@ -461,7 +455,7 @@
   padding: 24px;
   border: 1px solid var(--border);
   border-radius: 16px;
-  background: linear-gradient( 135deg, var(--surface-soft), var(--surface-soft) );
+  background: var(--surface-soft);
 }
 
 .ai-review .eyebrow {
@@ -643,11 +637,6 @@
     margin-top: 32px;
   }
 
-  .campaign-builder {
-    padding: 0;
-    border-radius: 0;
-  }
-
   .campaign-history,
   .campaign-details {
     padding: 22px 16px;
@@ -676,3 +665,47 @@
     width: 100%;
   }
 }
+
+
+/* The hidden builder stays mounted to preserve draft edits between pages. */
+.app[hidden], .builder-view[hidden] { display: none !important; }
+
+.draft-card {
+  margin-bottom: 14px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.draft-card-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-bottom: 12px;
+}
+
+.campaign-builder .draft-card label { margin: 0; }
+
+.draft-badge {
+  padding: 4px 7px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--muted);
+  background: var(--surface-soft);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.campaign-builder .draft-card input,
+.campaign-builder .draft-card textarea {
+  padding: 10px;
+  border-radius: 8px;
+  border-color: var(--border);
+}
+
+.draft-note { color: var(--muted); line-height: 1.6; }
+.draft-card .field-error { padding-top: 8px; }
+.step-button:disabled { opacity: 0.6; cursor: not-allowed; }

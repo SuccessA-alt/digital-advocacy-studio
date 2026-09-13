@@ -42,7 +42,7 @@ export default function CampaignDetails({
       coreMessage: campaign.coreMessage,
       sharingMethod: campaign.sharingMethod,
       decisionMaker: campaign.decisionMaker,
-      firstMoves: campaign.firstMoves,
+      advocacyPlan: campaign.advocacyPlan,
       successMeasures: campaign.successMeasures,
     }
   }
@@ -131,10 +131,6 @@ export default function CampaignDetails({
           <p>{campaign.coreMessage}</p>
         </article>
 
-        <article>
-          <h3>How the message will be shared</h3>
-          <p>{campaign.sharingMethod}</p>
-        </article>
 
         <article>
           <h3>Who can make the change</h3>
@@ -142,8 +138,8 @@ export default function CampaignDetails({
         </article>
 
         <article>
-          <h3>First move</h3>
-          <p>{campaign.firstMoves}</p>
+          <h3>Your advocacy plan</h3>
+          <p>{campaign.advocacyPlan}</p>
         </article>
 
         <article>

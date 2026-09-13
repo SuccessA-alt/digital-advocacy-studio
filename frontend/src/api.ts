@@ -1,6 +1,8 @@
 import type {
   AiReviewResponse,
   Campaign,
+  CampaignDraftRequest,
+  CampaignDraftResponse,
   CampaignPayload,
   Sdg,
   ValidationErrorResponse,
@@ -145,4 +147,16 @@ export async function downloadCampaignPdf(
   link.remove()
 
   URL.revokeObjectURL(downloadUrl)
+}
+
+export function generateCampaignDraft(
+  draftRequest: CampaignDraftRequest,
+): Promise<CampaignDraftResponse> {
+  return request<CampaignDraftResponse>('/ai/draft', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(draftRequest),
+  })
 }
