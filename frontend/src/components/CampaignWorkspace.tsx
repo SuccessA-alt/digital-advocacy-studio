@@ -4,6 +4,7 @@ import { ApiError, getCampaignVersions } from '../api'
 import type { Campaign, CampaignVersion, Sdg } from '../types'
 import CampaignDetails from './CampaignDetails'
 import CampaignForm from './CampaignForm'
+import CampaignAssets from './campaign-assets/CampaignAssets'
 
 interface CampaignWorkspaceProps {
   campaign: Campaign
@@ -22,6 +23,7 @@ export default function CampaignWorkspace({
   const [selectedVersion, setSelectedVersion] =
     useState<CampaignVersion | null>(null)
   const [isEditing, setIsEditing] = useState(false)
+  const [isBuildingAssets, setIsBuildingAssets] = useState(false)
   const [isLoadingVersions, setIsLoadingVersions] = useState(true)
   const [versionError, setVersionError] = useState('')
   const [refreshCount, setRefreshCount] = useState(0)
@@ -95,6 +97,16 @@ export default function CampaignWorkspace({
         updatedAt: selectedVersion.savedAt,
       }
     : campaign
+
+  if (isBuildingAssets) {
+    return (
+      <CampaignAssets
+        campaign={displayedCampaign}
+        versionNumber={selectedVersion?.versionNumber}
+        onBack={() => setIsBuildingAssets(false)}
+      />
+    )
+  }
 
   if (isEditing) {
     return (
@@ -188,6 +200,10 @@ export default function CampaignWorkspace({
         campaign={displayedCampaign}
         version={selectedVersion}
         onBack={onBack}
+        onBuildAssets={() => {
+          setIsBuildingAssets(true)
+          window.scrollTo(0, 0)
+        }}
       />
     </>
   )

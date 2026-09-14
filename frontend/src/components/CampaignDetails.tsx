@@ -15,12 +15,14 @@ interface CampaignDetailsProps {
   campaign: Campaign
   version?: CampaignVersion | null
   onBack: () => void
+  onBuildAssets: () => void
 }
 
 export default function CampaignDetails({
   campaign,
   version = null,
   onBack,
+  onBuildAssets,
 }: CampaignDetailsProps) {
   const [pdfError, setPdfError] = useState('')
   const [isDownloading, setIsDownloading] = useState(false)
@@ -128,6 +130,10 @@ export default function CampaignDetails({
           {isDownloading
             ? 'Preparing PDF...'
             : 'Download PDF'}
+        </button>
+
+        <button type="button" onClick={onBuildAssets}>
+          Build your campaign assets
         </button>
       </div>
     </section>
