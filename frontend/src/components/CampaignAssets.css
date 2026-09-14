@@ -1,10 +1,19 @@
+.asset-tool[hidden] {
+  display: none !important;
+}
+
+.campaign-assets > .back-button:hover {
+  color: var(--accent);
+  background: var(--surface-soft);
+}
+
 .asset-options {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
 }
 
-.asset-option {
+.campaign-assets .asset-option {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -19,14 +28,9 @@
   text-align: left;
 }
 
-.asset-option:hover,
-.asset-option[aria-pressed="true"] {
+.campaign-assets .asset-option:hover {
   border-color: var(--accent);
   background: var(--surface-soft);
-}
-
-.asset-option[aria-pressed="true"] {
-  box-shadow: 0 0 0 1px var(--accent);
 }
 
 .asset-option-icon {
@@ -43,8 +47,169 @@
   line-height: 1.6;
 }
 
-@media (max-width: 640px) {
-  .asset-options {
+.asset-editor label {
+  display: block;
+  margin: 18px 0 8px;
+  color: var(--text);
+  font-weight: 650;
+}
+
+.asset-editor input:not([type="checkbox"]):not([type="range"]):not([type="color"]),
+.asset-editor textarea,
+.asset-editor select {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--control-border);
+  border-radius: 12px;
+  color: var(--text);
+  background: var(--surface);
+  font: inherit;
+  line-height: 1.6;
+}
+
+.asset-editor textarea {
+  resize: vertical;
+}
+
+.asset-editor input[type="range"] {
+  width: 100%;
+  accent-color: var(--accent-fill);
+}
+
+.asset-editor input[type="color"] {
+  width: 64px;
+  height: 42px;
+}
+
+.asset-editor input[type="file"] {
+  font-size: 0.85rem;
+}
+
+.asset-editor .asset-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.asset-editor button {
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid var(--control-border);
+  border-radius: 10px;
+  color: var(--on-accent);
+  background: var(--accent-fill);
+  font: inherit;
+  font-weight: 650;
+}
+
+.asset-editor button:hover {
+  background: var(--accent-hover);
+}
+
+.asset-editor button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.asset-editor .asset-secondary,
+.asset-tabs button {
+  color: var(--accent);
+  background: var(--surface);
+}
+
+.asset-editor .asset-secondary:hover,
+.asset-tabs button:hover {
+  color: var(--accent);
+  background: var(--surface-soft);
+}
+
+.asset-tabs button[aria-pressed="true"] {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+  background: var(--surface-soft);
+}
+
+.asset-tabs,
+.asset-toolbar {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.asset-copy {
+  display: grid;
+  gap: 6px;
+}
+
+.asset-copy span {
+  max-width: 340px;
+  color: var(--error-text);
+  font-size: 0.9rem;
+}
+
+.asset-copy span:empty {
+  display: none;
+}
+
+.asset-image-layout {
+  display: grid;
+  grid-template-columns:
+    minmax(240px, 0.85fr)
+    minmax(0, 1.4fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.asset-controls {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.asset-controls > button {
+  margin-top: 12px;
+}
+
+.asset-controls > label:first-child {
+  margin-top: 0;
+}
+
+.asset-preview-column {
+  min-width: 0;
+}
+
+.asset-preview {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface-soft);
+}
+
+.asset-canvas {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 75vh;
+}
+
+@media (max-width: 700px) {
+  .asset-options,
+  .asset-image-layout {
     grid-template-columns: 1fr;
+  }
+
+  .campaign-assets .asset-option {
+    min-height: 160px;
   }
 }
