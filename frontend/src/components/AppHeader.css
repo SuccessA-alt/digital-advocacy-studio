@@ -1,0 +1,128 @@
+.studio-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  background: var(--surface);
+}
+
+.studio-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: min(100%, 900px);
+  margin: 0 auto;
+}
+
+.studio-brand {
+  min-width: 0;
+  min-height: 44px;
+  padding: 4px 0;
+  border: 0;
+  color: var(--text);
+  background: transparent;
+  font-size: 1.25rem;
+  font-weight: 750;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.studio-brand span {
+  color: var(--accent);
+}
+
+.studio-menu {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.studio-menu-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 8px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: var(--text);
+  background: transparent;
+}
+
+.studio-menu-toggle:hover,
+.studio-menu-toggle[aria-expanded='true'] {
+  background: var(--surface-soft);
+}
+
+.studio-menu-panel {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  display: grid;
+  gap: 4px;
+  width: min(260px, calc(100vw - 32px));
+  max-height: min(70vh, 400px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: 0 12px 32px var(--shadow);
+}
+
+.studio-menu-panel[hidden] {
+  display: none;
+}
+
+.studio-menu-link {
+  width: 100%;
+  min-height: 44px;
+  padding: 12px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: var(--text);
+  background: transparent;
+  font-weight: 650;
+  text-align: left;
+}
+
+.studio-menu-link:hover {
+  background: var(--surface-soft);
+}
+
+.studio-menu-link[aria-current='page'] {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--surface-soft);
+}
+
+/* Preserve the screen visibility rules used by App.tsx. */
+.studio-screen[hidden] {
+  display: none !important;
+}
+
+.studio-home-content {
+  margin: 0;
+}
+
+.studio-home-content .studio-welcome {
+  min-height: 0;
+}
+
+#studio-main:focus {
+  outline: none;
+}
+
+@media (max-width: 600px) {
+  .studio-header {
+    padding: 12px 16px;
+  }
+
+  .studio-brand {
+    font-size: 1.05rem;
+  }
+}
