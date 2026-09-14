@@ -1,246 +1,176 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
-import {
-  ApiError,
-  getCampaigns,
-  getSdgs,
-} from './api'
-
+import { ApiError, getCampaigns, getSdgs } from './api'
+import AppHeader from './components/AppHeader'
+import type { AppView } from './components/AppHeader'
 import CampaignWorkspace from './components/CampaignWorkspace'
 import CampaignForm from './components/CampaignForm'
 import CampaignHistory from './components/CampaignHistory'
 import WelcomePage from './components/WelcomePage'
-
-import type {
-  Campaign,
-  Sdg,
-} from './types'
-
 import ThemeSelect from './components/ThemeSelect'
 import { useTheme } from './hooks/useTheme'
+import type { Campaign, Sdg } from './types'
 
 import './App.css'
 
-type AppView =
-  | 'welcome'
-  | 'builder'
-  | 'history'
-  | 'details'
-  | 'edit'
-
 export default function App() {
   const { theme, setTheme } = useTheme()
-  const [view, setView] =
-  useState<AppView>('welcome')
-
-  const [sdgs, setSdgs] =
-    useState<Sdg[]>([])
-
-  const [campaigns, setCampaigns] =
-    useState<Campaign[]>([])
-
-  const [selectedCampaign, setSelectedCampaign] =
-    useState<Campaign | null>(null)
-
-  const [isLoading, setIsLoading] =
-    useState<boolean>(true)
-
-  const [loadingError, setLoadingError] =
-    useState<string>('')
-
-  const [successMessage, setSuccessMessage] =
-    useState<string>('')
+  const [view, setView] = useState<AppView>('welcome')
+  const [sdgs, setSdgs] = useState<Sdg[]>([])
+  const [campaigns, setCampaigns] = useState<Campaign[]>([])
+  const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [loadingError, setLoadingError] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
+  const mainRef = useRef<HTMLElement>(null)
+  const previousView = useRef(view)
 
   useEffect(() => {
-    async function loadApplicationData() {
-      setIsLoading(true)
-      setLoadingError('')
+    let cancelled = false
 
+    async function loadApplicationData() {
       try {
-        const [
-          loadedSdgs,
-          loadedCampaigns,
-        ] = await Promise.all([
+        const [loadedSdgs, loadedCampaigns] = await Promise.all([
           getSdgs(),
           getCampaigns(),
         ])
 
-        setSdgs(loadedSdgs)
-        setCampaigns(loadedCampaigns)
+        if (!cancelled) {
+          setSdgs(loadedSdgs)
+          setCampaigns(loadedCampaigns)
+        }
       } catch (error: unknown) {
-        if (error instanceof ApiError) {
-          setLoadingError(error.message)
-        } else {
+        if (!cancelled) {
           setLoadingError(
-            'The application could not connect to the backend.',
+            error instanceof ApiError
+              ? error.message
+              : 'The application could not connect to the backend.',
           )
         }
       } finally {
-        setIsLoading(false)
+        if (!cancelled) setIsLoading(false)
       }
     }
 
     void loadApplicationData()
+    return () => { cancelled = true }
   }, [])
 
-  function showBuilder() {
-    setView('builder')
-    setSelectedCampaign(null)
+  useEffect(() => {
+    if (previousView.current === view) return
+    previousView.current = view
+    window.scrollTo(0, 0)
+    mainRef.current?.focus({ preventScroll: true })
+  }, [view])
+
+  function navigate(nextView: AppView) {
+    setView(nextView)
     setSuccessMessage('')
+    // Keep the selected campaign so Current Campaign can resume its editor.
+  }
+
+  function showBuilder() {
+    navigate('builder')
   }
 
   function showHistory() {
-    setView('history')
-    setSelectedCampaign(null)
-    setSuccessMessage('')
+    navigate('history')
   }
 
-  function handleCampaignCreated(
-  campaign: Campaign,
-) {
-  setCampaigns((currentCampaigns) => [
-    campaign,
-    ...currentCampaigns,
-  ])
+  function handleCampaignCreated(campaign: Campaign) {
+    setCampaigns((current) => [campaign, ...current])
+    setSelectedCampaign(campaign)
+    setView('details')
+    setSuccessMessage(`"${campaign.title}" was saved successfully.`)
+  }
 
-  setSelectedCampaign(campaign)
-  setView('details')
-
-  setSuccessMessage(
-    `"${campaign.title}" was saved successfully.`,
-  )
-}
-
-function handleCampaignUpdated(campaign: Campaign) {
-  setCampaigns((currentCampaigns) =>
-    currentCampaigns.map((saved) =>
-      saved.id === campaign.id ? campaign : saved,
-    ),
-  )
-
-  setSelectedCampaign(campaign)
-  setView('details')
-  setSuccessMessage('Your changes were saved as a new version.')
-}
+  function handleCampaignUpdated(campaign: Campaign) {
+    setCampaigns((current) =>
+      current.map((saved) => saved.id === campaign.id ? campaign : saved),
+    )
+    setSelectedCampaign(campaign)
+    setView('details')
+    setSuccessMessage('Your changes were saved as a new version.')
+  }
 
   function handleCampaignSelected(campaign: Campaign) {
-  setSelectedCampaign(campaign)
-  setSuccessMessage('')
-  setView('details')
-}
+    setSelectedCampaign(campaign)
+    navigate('details')
+  }
+
   return (
-    <>
-      {view === 'welcome' && (
-        <WelcomePage theme={theme} onThemeChange={setTheme}
-          onStart={showBuilder} onViewCampaigns={showHistory} />
-      )}
-      <div className="app" hidden={view === 'welcome'}>
-      <header className="app-header">
-        <div className="header-content">
+    <div className="app">
+      {/* This header remains visible on every screen, including Home. */}
+      <AppHeader
+        view={view}
+        hasCurrentCampaign={selectedCampaign !== null}
+        onNavigate={navigate}
+      />
+      <ThemeSelect theme={theme} onThemeChange={setTheme} />
 
-          <h1>
-            Digital Advocacy Campaign Studio
-          </h1>
-          <ThemeSelect theme={theme} onThemeChange={setTheme} />
+      <main
+        id="studio-main"
+        ref={mainRef}
+        tabIndex={-1}
+        className={view === 'welcome' ? 'studio-home-content' : 'main-content'}
+      >
+        {view === 'welcome' && <WelcomePage onStart={showBuilder} />}
+
+        <div className="studio-screen" hidden={view === 'welcome'}>
+          {successMessage && (
+            <div className="success-message" role="status">
+              {successMessage}
+            </div>
+          )}
+
+          {isLoading && (
+            <p className="status-message">Loading the campaign studio...</p>
+          )}
+
+          {loadingError && (
+            <div className="error-summary" role="alert">
+              <h2>Unable to load the application</h2>
+              <p>{loadingError}</p>
+              <p>
+                Please try refreshing the page. Your campaign studio is temporarily unavailable.
+              </p>
+            </div>
+          )}
+
+          {!isLoading && !loadingError && (
+            <>
+              <div className="studio-screen" hidden={view !== 'builder'}>
+                <CampaignForm
+                  isActive={view === 'builder'}
+                  sdgs={sdgs}
+                  onCampaignSaved={handleCampaignCreated}
+                  onBackToWelcome={() => navigate('welcome')}
+                />
+              </div>
+
+              {view === 'history' && (
+                <CampaignHistory
+                  campaigns={campaigns}
+                  onCampaignSelected={handleCampaignSelected}
+                />
+              )}
+
+              {/* Hiding instead of unmounting preserves this workspace's edits. */}
+              {selectedCampaign && (
+                <div className="studio-screen" hidden={view !== 'details'}>
+                  <CampaignWorkspace
+                    key={selectedCampaign.id}
+                    campaign={selectedCampaign}
+                    sdgs={sdgs}
+                    onCampaignSaved={handleCampaignUpdated}
+                    onBack={showHistory}
+                  />
+                </div>
+              )}
+            </>
+          )}
         </div>
-
-        <nav
-          aria-label="Main navigation"
-          className="main-navigation"
-        >
-          <button
-            className={
-              view === 'builder'
-                ? 'navigation-button active'
-                : 'navigation-button'
-            }
-            onClick={showBuilder}
-            type="button"
-          >
-            Build Campaign
-          </button>
-
-          <button
-            className={
-              view === 'history' ||
-              view === 'details'
-                ? 'navigation-button active'
-                : 'navigation-button'
-            }
-            onClick={showHistory}
-            type="button"
-          >
-            Campaign History
-          </button>
-        </nav>
-      </header>
-
-      <main className="main-content">
-        {successMessage && (
-          <div
-            className="success-message"
-            role="status"
-          >
-            {successMessage}
-          </div>
-        )}
-
-        {isLoading && (
-          <p className="status-message">
-            Loading the campaign studio...
-          </p>
-        )}
-
-        {loadingError && (
-          <div
-            className="error-summary"
-            role="alert"
-          >
-            <h2>Unable to load the application</h2>
-            <p>{loadingError}</p>
-
-            <p>
-              Please try refreshing the page. Your campaign studio is temporarily unavailable.
-            </p>
-          </div>
-        )}
-
-        {!isLoading && !loadingError && (
-          <div className="builder-view" hidden={view !== 'builder'}>
-           <CampaignForm
-            isActive={view === 'builder'}
-  sdgs={sdgs}
-  onCampaignSaved={handleCampaignCreated}
-  onBackToWelcome={() => setView('welcome')}
-/>
-          </div>
-        )}
-
-        {!isLoading &&
-          !loadingError &&
-          view === 'history' && (
-            <CampaignHistory
-              campaigns={campaigns}
-              onCampaignSelected={
-                handleCampaignSelected
-              }
-            />
-          )}
-
-        {!isLoading &&
-          !loadingError &&
-          view === 'details' &&
-          selectedCampaign && (
-            <CampaignWorkspace
-         key={selectedCampaign.id}
-         campaign={selectedCampaign}
-         sdgs={sdgs}
-         onCampaignSaved={handleCampaignUpdated}
-         onBack={showHistory}
-              />
-          )}
       </main>
-      </div>
-    </>
+    </div>
   )
 }
