@@ -1,4 +1,4 @@
-import { useState, type SyntheticEvent } from 'react'
+import { useId, useState, type SyntheticEvent } from 'react'
 
 import {
   ApiError,
@@ -40,25 +40,6 @@ const stepNames = [
   'Success',
 ]
 
-const sdgColours: Record<number, string> = {
-  1: '#f8c8d2',
-  2: '#f3dfb2',
-  3: '#c8e2c3',
-  4: '#f0bdc8',
-  5: '#ffc9c3',
-  6: '#bceaf5',
-  7: '#ffedaa',
-  8: '#e8bdce',
-  9: '#ffd0b5',
-  10: '#f5bdd8',
-  11: '#ffdbad',
-  12: '#e5d2ae',
-  13: '#c4dbc9',
-  14: '#bce0f3',
-  15: '#d0e9bb',
-  16: '#bfd5e6',
-  17: '#c9d2e2',
-}
 
 
 const draftFields = [
@@ -85,6 +66,7 @@ export default function CampaignForm({
   onBackToWelcome,
   onCampaignSaved,
 }: CampaignFormProps) {
+  const sdgSelectId = useId()
   const [step, setStep] = useState<number>(1)
 
   const [isGenerating, setIsGenerating] = useState(false)
@@ -366,55 +348,46 @@ if (!initialCampaign) {
               </p>
             )}
 
-            <div
-              className="sdg-picker"
-              role="group"
-              aria-labelledby="sdg-heading"
-              aria-describedby={
-                fieldErrors.sdgId
-                  ? 'sdg-help sdg-error'
-                  : 'sdg-help'
-              }
-            >
-              <p id="sdg-heading" className="sdg-picker-heading">
+            <div className="sdg-picker">
+              <label htmlFor={sdgSelectId} className="sdg-picker-heading">
                 Connect to a Sustainable Development Goal (optional)
-              </p>
-              <p id="sdg-help" className="sdg-picker-help">
-                Choose one goal, or continue without one.
-                Select your chosen goal again to clear it.
+              </label>
+              <p id={sdgSelectId + '-help'} className="sdg-picker-help">
+                Choose one goal, or select “No SDG selected” to continue without one.
               </p>
 
-              <div className="sdg-options">
-                {sdgs.map((sdg) => {
-                  const isSelected = campaign.sdgId === sdg.id
-
-                  return (
-                    <button
-                      key={sdg.id}
-                      type="button"
-                      className="sdg-option"
-                      aria-pressed={isSelected}
-                      style={{
-                        backgroundColor:
-                          sdgColours[sdg.goalNumber] ?? '#eeeaf8',
-                      }}
-                      onClick={() =>
-                        updateField('sdgId', isSelected ? null : sdg.id)
-                      }
-                    >
-                      {isSelected && <span aria-hidden="true">✓ </span>}
-                      {sdg.goalNumber} · {sdg.name}
-                    </button>
+              <select
+                id={sdgSelectId}
+                name="sdgId"
+                className="sdg-select"
+                value={campaign.sdgId ?? ''}
+                aria-invalid={Boolean(fieldErrors.sdgId)}
+                aria-describedby={
+                  sdgSelectId + '-help' + (fieldErrors.sdgId ? ' ' + sdgSelectId + '-error' : '')
+                }
+                onChange={(event) =>
+                  updateField(
+                    'sdgId',
+                    event.target.value === '' ? null : Number(event.target.value),
                   )
-                })}
-              </div>
-            </div>
+                }
+              >
+                <option value="">No SDG selected</option>
+                {[...sdgs]
+                  .sort((first, second) => first.goalNumber - second.goalNumber)
+                  .map((sdg) => (
+                    <option key={sdg.id} value={sdg.id}>
+                      {sdg.goalNumber} · {sdg.name}
+                    </option>
+                  ))}
+              </select>
 
-            {fieldErrors.sdgId && (
-              <p id="sdg-error" className="field-error">
-                {fieldErrors.sdgId}
-              </p>
-            )}
+              {fieldErrors.sdgId && (
+                <p id={sdgSelectId + '-error'} className="field-error">
+                  {fieldErrors.sdgId}
+                </p>
+              )}
+            </div>
           </fieldset>
         )}
 
