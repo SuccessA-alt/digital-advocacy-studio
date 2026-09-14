@@ -1,4 +1,3 @@
-/* Digital Advocacy Campaign Studio: shared and desktop styles */
 .app {
   min-height: 100vh;
   background: var(--page);
@@ -409,22 +408,20 @@
   font-weight: 750;
 }
 
+/* Every campaign section occupies one full-width row. */
 .campaign-details-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 18px;
   margin-top: 28px;
 }
 
 .campaign-details-grid article {
+  min-width: 0;
   padding: 20px;
   border: 1px solid var(--border);
   border-radius: 14px;
   background: var(--surface-soft);
-}
-
-.campaign-details-grid article:last-child {
-  grid-column: 1 / -1;
 }
 
 .campaign-details-grid h3 {
@@ -436,6 +433,7 @@
 }
 
 .campaign-details-grid p {
+  overflow-wrap: anywhere;
   margin: 0;
   color: var(--text);
   line-height: 1.65;
@@ -569,7 +567,8 @@
   margin-top: 24px;
 }
 
-.sdg-picker-heading {
+.campaign-builder .sdg-picker-heading {
+  display: block;
   margin: 0 0 8px;
   color: var(--text);
   font-weight: 600;
@@ -582,39 +581,35 @@
   line-height: 1.5;
 }
 
-.sdg-options {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+.sdg-select {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid var(--control-border);
+  border-radius: 12px;
+  color: var(--text);
+  background: var(--surface);
+  font: inherit;
 }
 
-.sdg-option {
-  min-height: 44px;
-  padding: 8px 12px;
-  border: 2px solid transparent;
-  border-radius: 8px;
-  color: var(--sdg-ink);
-  text-align: left;
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-.sdg-option:hover:not(:disabled) {
-  border-color: var(--border);
-}
-
-.sdg-option[aria-pressed="true"] {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 1px var(--accent);
-}
-
-.sdg-option:focus-visible {
+.sdg-select:focus-visible {
   outline: 3px solid var(--accent);
   outline-offset: 3px;
 }
 
-.sdg-option:disabled {
+.sdg-select[aria-invalid='true'] {
+  border-color: var(--error-text);
+}
+
+.sdg-select:disabled {
   opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.sdg-picker .field-error {
+  padding-top: 8px;
 }
 
 /* Adjustments for smaller screens */
@@ -645,14 +640,6 @@
 
   .step-button {
     justify-content: flex-start;
-  }
-
-  .campaign-details-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .campaign-details-grid article:last-child {
-    grid-column: auto;
   }
 
   .campaign-details-actions,
