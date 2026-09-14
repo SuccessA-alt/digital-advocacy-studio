@@ -4,7 +4,7 @@ import { ApiError, getCampaignVersions } from '../api'
 import type { Campaign, CampaignVersion, Sdg } from '../types'
 import CampaignDetails from './CampaignDetails'
 import CampaignForm from './CampaignForm'
-import CampaignAssets from './CampaignAssets'
+import CampaignAssets from './campaign-assets/CampaignAssets'
 
 interface CampaignWorkspaceProps {
   campaign: Campaign
