@@ -62,6 +62,19 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- Runs numbered SQL changes against our existing database. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-flyway</artifactId>
+        </dependency>
+
+<!-- Enables Flyway to work with MySQL. -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-mysql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
         <!--
             Creates downloadable campaign-plan PDF documents.
         -->
