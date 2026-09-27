@@ -14,6 +14,9 @@ import jakarta.persistence.PreUpdate;
 import java.time.LocalDateTime;
 
 import com.advocacy.backend.sdg.Sdg;
+import com.advocacy.backend.browser.BrowserOwner;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.FetchType;
 
 @Entity
 @Table(name = "campaigns")
@@ -22,6 +25,15 @@ public class Campaign {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+        @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "browser_owner_id",
+            nullable = true,
+            updatable = false
+    )
+    private BrowserOwner browserOwner;
 
     @Column(nullable = false, length = 120)
     private String title;
@@ -62,6 +74,14 @@ public class Campaign {
 
     public Long getId() {
         return id;
+    }
+
+    public BrowserOwner getBrowserOwner() {
+        return browserOwner;
+    }
+
+    public void setBrowserOwner(BrowserOwner browserOwner) {
+        this.browserOwner = browserOwner;
     }
 
     public String getTitle() {
