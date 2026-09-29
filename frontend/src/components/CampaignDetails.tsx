@@ -15,6 +15,7 @@ interface CampaignDetailsProps {
   campaign: Campaign
   version?: CampaignVersion | null
   onBack: () => void
+  onEdit: () => void
   onBuildAssets: () => void
 }
 
@@ -22,6 +23,7 @@ export default function CampaignDetails({
   campaign,
   version = null,
   onBack,
+  onEdit,
   onBuildAssets,
 }: CampaignDetailsProps) {
   const [pdfError, setPdfError] = useState('')
@@ -37,7 +39,7 @@ export default function CampaignDetails({
       if (version) {
         await downloadCampaignVersionPdf(version)
       } else {
-        await downloadCampaignPdf(campaign.id)
+        await downloadCampaignPdf(campaign)
       }
     } catch (error: unknown) {
       setPdfError(
@@ -54,10 +56,10 @@ export default function CampaignDetails({
     <section className="campaign-details">
       <button
         className="back-button"
-        onClick={onBack}
+        onClick={campaign.id === null ? onEdit : onBack}
         type="button"
       >
-        ← Back to Campaign History
+        {campaign.id === null ? 'Edit campaign' : '← Back to Campaign History'}
       </button>
 
       <div className="campaign-details-header">
