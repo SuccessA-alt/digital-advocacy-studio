@@ -2,7 +2,6 @@ import { useId, useState, type SyntheticEvent } from 'react'
 
 import {
   ApiError,
-  createCampaign,
   generateCampaignDraft,
   updateCampaign,
 } from '../api'
@@ -218,11 +217,28 @@ export default function CampaignForm({
     setFieldErrors({})
 
     try {
-     const savedCampaign = initialCampaign
-  ? await updateCampaign(initialCampaign.id, campaign)
-  : await createCampaign(campaign)
+         let completedCampaign: Campaign
 
-onCampaignSaved(savedCampaign)
+      if (initialCampaign?.id != null) {
+        completedCampaign = await updateCampaign(
+          initialCampaign.id,
+          campaign,
+        )
+      } else {
+        const { sdgId, ...fields } = campaign
+        const now = new Date().toISOString()
+
+        completedCampaign = {
+          ...fields,
+          id: null,
+          draftKey: initialCampaign?.draftKey ?? crypto.randomUUID(),
+          sdg: sdgs.find((sdg) => sdg.id === sdgId) ?? null,
+          createdAt: initialCampaign?.createdAt ?? now,
+          updatedAt: now,
+        }
+      }
+
+      onCampaignSaved(completedCampaign)
 
 if (!initialCampaign) {
   setCampaign({ ...emptyCampaign })
@@ -467,10 +483,10 @@ if (!initialCampaign) {
       type="submit"
     >
 {isSaving
-  ? 'Saving…'
+  ? (initialCampaign?.id != null ? 'Saving…' : 'Preparing…')
   : initialCampaign
-    ? 'Save changes'
-    : 'Create campaign plan →'}    </button>
+    ? (initialCampaign.id === null ? 'Apply changes' : 'Save changes')
+    : 'Create campaign plan →'}  </button>
   )}
 </div>
         {isGenerating && <p role="status" className="draft-note">Building your campaign draft...</p>}
