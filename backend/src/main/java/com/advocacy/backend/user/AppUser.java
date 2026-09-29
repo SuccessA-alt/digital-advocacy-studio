@@ -23,7 +23,11 @@ public class AppUser {
     private String email;
 
     @JsonIgnore
-    @Column(name = "password_hash", nullable = false, length = 255)
+    @Column(name = "google_subject", unique = true, length = 255)
+    private String googleSubject;
+
+    @JsonIgnore
+    @Column(name = "password_hash", length = 255)
     private String passwordHash;
 
     @Column(name = "email_verified", nullable = false)
@@ -41,6 +45,17 @@ public class AppUser {
         this.passwordHash = passwordHash;
     }
 
+    public static AppUser forGoogle(
+            String googleSubject,
+            String email
+    ) {
+        AppUser user = new AppUser();
+        user.googleSubject = googleSubject;
+        user.email = email;
+        user.emailVerified = true;
+        return user;
+    }
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = Instant.now();
@@ -52,6 +67,10 @@ public class AppUser {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getGoogleSubject() {
+        return googleSubject;
     }
 
     public String getPasswordHash() {
