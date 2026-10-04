@@ -6,3 +6,18 @@ target
 *.iml
 *.log
 *.pdf
+
+# Keep local settings and credentials out of Docker builds
+**/.env
+**/.env.*
+**/*.pem
+**/*.key
+**/*.p12
+**/*.pfx
+**/id_rsa
+**/id_ed25519
+**/credentials*.json
+**/service-account*.json
+**/application-local.properties
+**/application-local.yml
+**/application-local.yaml
