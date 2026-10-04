@@ -30,6 +30,7 @@ public CampaignDraftResponse draftCampaign(
     return openAiService.draftCampaign(request);
 }
 
+// This end point was used in the first version of the app and not currently been used in this version
     @PostMapping("/review")
     public Map<String, String> reviewCampaign(
             @Valid @RequestBody

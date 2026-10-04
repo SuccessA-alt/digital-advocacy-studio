@@ -91,7 +91,8 @@ public CampaignDraftResponse draftCampaign(
     }
 
     Map<String, Object> requestBody = new LinkedHashMap<>();
-
+   
+    /* This validates the open API KEY and what can be used per time */
     requestBody.put("model", model);
     requestBody.put("store", false);
     requestBody.put("max_output_tokens", 3500);

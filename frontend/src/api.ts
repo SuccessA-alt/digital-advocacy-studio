@@ -28,6 +28,7 @@ export class ApiError extends Error {
   }
 }
 
+/* This The shared request() function, handles the response and throws an ApiError if the request fails */
 async function request<T>(
   path: string,
   options?: RequestInit,
@@ -150,6 +151,9 @@ export async function downloadCampaignPdf(
   URL.revokeObjectURL(downloadUrl)
 }
 
+/* This function calls the This function sends the problem to /api/ai/draft.
+It uses POST because we are submitting information for the backend to process.
+ JSON.stringify() converts that information into the format sent in the request.” */
 export function generateCampaignDraft(
   draftRequest: CampaignDraftRequest,
 ): Promise<CampaignDraftResponse> {
