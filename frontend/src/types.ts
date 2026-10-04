@@ -17,7 +17,8 @@ export type CampaignPayload = {
 }
 
 export type Campaign = {
-  id: number
+    id: number | null
+  draftKey?: string
   title: string
   problem: string
   sdg: Sdg | null

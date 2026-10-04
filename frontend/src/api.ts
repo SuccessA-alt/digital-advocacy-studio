@@ -21,11 +21,55 @@ export class ApiError extends Error {
     fieldErrors: Record<string, string> = {},
   ) {
     super(message)
-
     this.name = 'ApiError'
     this.status = status
     this.fieldErrors = fieldErrors
   }
+}
+
+export type AuthStatus = {
+  authenticated: boolean
+  accountId: number | null
+  name: string | null
+  email: string | null
+}
+
+type CsrfDetails = {
+  headerName: string
+  token: string
+}
+
+async function apiFetch(
+  path: string,
+  options: RequestInit = {},
+): Promise<Response> {
+  const headers = new Headers(options.headers)
+  const method = (options.method ?? 'GET').toUpperCase()
+
+  if (!['GET', 'HEAD', 'OPTIONS'].includes(method)) {
+    const tokenResponse = await fetch(`${API_BASE}/auth/csrf`, {
+      credentials: 'same-origin',
+      cache: 'no-store',
+    })
+
+    if (!tokenResponse.ok) {
+      throw new ApiError(
+        'Could not prepare this request. Please try again.',
+        tokenResponse.status,
+      )
+    }
+
+    const csrf = (await tokenResponse.json()) as CsrfDetails
+    headers.set(csrf.headerName, csrf.token)
+  }
+
+  return fetch(`${API_BASE}${path}`, {
+    ...options,
+    method,
+    headers,
+    credentials: 'same-origin',
+    cache: 'no-store',
+  })
 }
 
 /* This The shared request() function, handles the response and throws an ApiError if the request fails */
@@ -33,17 +77,13 @@ async function request<T>(
   path: string,
   options?: RequestInit,
 ): Promise<T> {
-  const response = await fetch(
-    `${API_BASE}${path}`,
-    options,
-  )
+  const response = await apiFetch(path, options)
 
   if (!response.ok) {
     let errorBody: ValidationErrorResponse | undefined
 
     try {
-      errorBody =
-        (await response.json()) as ValidationErrorResponse
+      errorBody = (await response.json()) as ValidationErrorResponse
     } catch {
       errorBody = undefined
     }
@@ -63,6 +103,14 @@ async function request<T>(
   return (await response.json()) as T
 }
 
+export function getAuthStatus(): Promise<AuthStatus> {
+  return request<AuthStatus>('/auth/me')
+}
+
+export function signOut(): Promise<void> {
+  return request<void>('/auth/logout', { method: 'POST' })
+}
+
 export function getSdgs(): Promise<Sdg[]> {
   return request<Sdg[]>('/sdgs')
 }
@@ -71,9 +119,7 @@ export function getCampaigns(): Promise<Campaign[]> {
   return request<Campaign[]>('/campaigns')
 }
 
-export function getCampaign(
-  id: number,
-): Promise<Campaign> {
+export function getCampaign(id: number): Promise<Campaign> {
   return request<Campaign>(`/campaigns/${id}`)
 }
 
@@ -102,9 +148,7 @@ export function updateCampaign(
   })
 }
 
-export function deleteCampaign(
-  id: number,
-): Promise<void> {
+export function deleteCampaign(id: number): Promise<void> {
   return request<void>(`/campaigns/${id}`, {
     method: 'DELETE',
   })
@@ -123,10 +167,32 @@ export function reviewCampaign(
 }
 
 export async function downloadCampaignPdf(
-  id: number,
+  campaign: Campaign,
 ): Promise<void> {
-  const response = await fetch(
-    `${API_BASE}/campaigns/${id}/pdf`,
+  const isDraft = campaign.id === null
+  const path = isDraft
+    ? '/campaigns/draft/pdf'
+    : `/campaigns/${campaign.id}/pdf`
+
+  const response = await apiFetch(
+    path,
+    isDraft
+      ? {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: campaign.title,
+            problem: campaign.problem,
+            sdgId: campaign.sdg?.id ?? null,
+            desiredOutcome: campaign.desiredOutcome,
+            coreMessage: campaign.coreMessage,
+            sharingMethod: campaign.sharingMethod,
+            decisionMaker: campaign.decisionMaker,
+            advocacyPlan: campaign.advocacyPlan,
+            successMeasures: campaign.successMeasures,
+          }),
+        }
+      : undefined,
   )
 
   if (!response.ok) {
@@ -138,17 +204,20 @@ export async function downloadCampaignPdf(
 
   const pdfBlob = await response.blob()
   const downloadUrl = URL.createObjectURL(pdfBlob)
-
   const link = document.createElement('a')
 
   link.href = downloadUrl
-  link.download = `campaign-${id}.pdf`
+  link.download = isDraft
+    ? 'campaign-draft.pdf'
+    : `campaign-${campaign.id}.pdf`
 
-  document.body.appendChild(link)
-  link.click()
-  link.remove()
-
-  URL.revokeObjectURL(downloadUrl)
+  try {
+    document.body.appendChild(link)
+    link.click()
+  } finally {
+    link.remove()
+    window.setTimeout(() => URL.revokeObjectURL(downloadUrl), 60_000)
+  }
 }
 
 /* This function calls the This function sends the problem to /api/ai/draft.
@@ -186,8 +255,8 @@ export function getCampaignVersion(
 export async function downloadCampaignVersionPdf(
   version: CampaignVersion,
 ): Promise<void> {
-  const response = await fetch(
-    `${API_BASE}/campaigns/${version.campaignId}/versions/${version.id}/pdf`,
+  const response = await apiFetch(
+    `/campaigns/${version.campaignId}/versions/${version.id}/pdf`,
   )
 
   if (!response.ok) {
@@ -210,10 +279,6 @@ export async function downloadCampaignVersionPdf(
     link.click()
   } finally {
     link.remove()
-
-    // Allow the browser time to begin the download before cleanup.
-    window.setTimeout(() => {
-      URL.revokeObjectURL(downloadUrl)
-    }, 60_000)
+    window.setTimeout(() => URL.revokeObjectURL(downloadUrl), 60_000)
   }
 }

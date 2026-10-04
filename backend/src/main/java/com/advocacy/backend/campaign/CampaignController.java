@@ -30,7 +30,22 @@ public class CampaignController {
         this.campaignService = campaignService;
         this.campaignPdfService = campaignPdfService;
     }
+    
+       @PostMapping(
+            value = "/draft/pdf",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_PDF_VALUE
+    )
+    public ResponseEntity<byte[]> downloadDraftPdf(
+            @Valid @RequestBody CampaignRequest request) {
 
+        Campaign draft = campaignService.buildDraft(request);
+
+        return pdfDownload(
+                campaignPdfService.createCampaignPdf(draft),
+                "campaign-draft.pdf"
+        );
+    }
     @PostMapping
     public ResponseEntity<Campaign> createCampaign(
             @Valid @RequestBody CampaignRequest request) {

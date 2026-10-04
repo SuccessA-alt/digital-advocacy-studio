@@ -222,7 +222,7 @@ export default function ImageEditor({
           downloadFile(
             blob,
             'campaign-' +
-              campaign.id +
+                (campaign.id ?? 'draft') +
               '-' +
               settings.format +
               '.png',

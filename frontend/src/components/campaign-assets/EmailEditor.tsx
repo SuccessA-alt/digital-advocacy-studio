@@ -69,8 +69,7 @@ export default function EmailEditor({
               new Blob([email], {
                 type: 'text/plain;charset=utf-8',
               }),
-              'campaign-' + campaign.id + '-email.txt',
-            )
+              'campaign-' + (campaign.id ?? 'draft') + '-email.txt',            )
           }
         >
           Download email

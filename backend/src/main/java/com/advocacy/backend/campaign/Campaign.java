@@ -15,6 +15,10 @@ import java.time.LocalDateTime;
 
 import com.advocacy.backend.sdg.Sdg;
 
+import com.advocacy.backend.user.AppUser;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.FetchType;
+
 @Entity
 @Table(name = "campaigns")
 public class Campaign {
@@ -22,6 +26,20 @@ public class Campaign {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_user_id", updatable = false)
+    private AppUser owner;
+
+    @JsonIgnore
+    public AppUser getOwner() {
+        return owner;
+    }
+
+    public void setOwner(AppUser owner) {
+        this.owner = owner;
+    }
 
     @Column(nullable = false, length = 120)
     private String title;
