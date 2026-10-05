@@ -138,6 +138,10 @@ export default function CampaignDetails({
           Build your campaign assets
         </button>
       </div>
+      <p className="draft-note">
+        AI can make mistakes. Please review this campaign, verify any
+        facts, and make any necessary changes before using or sharing it.
+      </p>
     </section>
   )
 }
